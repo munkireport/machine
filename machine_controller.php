@@ -79,7 +79,6 @@ class Machine_controller extends Module_controller
         $lastweek = time() - 60 * 60 * 24 * 7;
         $out = array();
         $machine = new Machine_model();
-        new Reportdata_model;
 
         $filter = get_machine_group_filter('AND');
 
