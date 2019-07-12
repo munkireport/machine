@@ -45,7 +45,9 @@ class Machine_processor extends Processor
             $mylist['buildversion'] = preg_replace('/[^A-Za-z0-9]/', '', $mylist['buildversion']);
         }
 
-        $model = Machine_model::firstOrNew(['serial_number' => $this->serial_number]);
-        $model->fill($mylist)->save();
+        Machine_model::updateOrCreate(
+            ['serial_number' => $this->serial_number],
+            $mylist
+        );
     }
 }
