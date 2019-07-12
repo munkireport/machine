@@ -38,9 +38,16 @@ class Machine_controller extends Module_controller
      **/
     public function get_duplicate_computernames()
     {
-        $machine = new Machine_model();
+        $machine = Machine_model::selectRaw('computer_name, COUNT(*) AS count')
+            ->filter()
+            ->groupBy('computer_name')
+            ->having('count', '>', 1)
+            ->orderBy('count', 'desc')
+            ->get()
+            ->toArray();
+    
         $obj = new View();
-        $obj->view('json', array('msg' => $machine->get_duplicate_computernames()));
+        $obj->view('json', ['msg' => $machine]);
     }
 
     /**
@@ -49,9 +56,59 @@ class Machine_controller extends Module_controller
      **/
     public function get_model_stats($summary="")
     {
-        $machine = new Machine_model();
+        $machine = Machine_model::selectRaw('count(*) AS count, machine_desc AS label')
+            ->filter()
+            ->groupBy('machine_desc')
+            ->orderBy('count', 'desc')
+            ->get()
+            ->toArray();
+
+        $out = array();
+        foreach ($machine as $obj) {
+            $obj['label'] = $obj['label'] ? $obj['label'] : 'Unknown';
+            $out[] = $obj;
+        }
+
+        // Check if we need to convert to summary (Model + screen size)
+        if($summary){
+            $model_list = array();
+            foreach ($out as $key => $obj) {
+                // Mac mini Server (Late 2012)
+                //
+                $suffix = "";
+                if(preg_match('/^(.+) \((.+)\)/', $obj['label'], $matches))
+                {
+                    $name = $matches[1];
+                    // Find suffix
+                    if(preg_match('/([\d\.]+-inch)/', $matches[2], $matches))
+                    {
+                        $suffix = ' ('.$matches[1].')';
+                    }
+                }
+                else
+                {
+                    $name = $obj['label'];
+
+                }
+                if(! isset($model_list[$name.$suffix]))
+                {
+                    $model_list[$name.$suffix] = 0;
+                }
+                $model_list[$name.$suffix] += $obj['count'];
+
+            }
+            // Erase out
+            $out = array();
+            // Sort model list
+            arsort($model_list);
+            // Add entries to $out
+            foreach ($model_list as $key => $count)
+            {
+                $out[] = array('label' => $key, 'count' => $count);
+            }
+        }
         $obj = new View();
-        $obj->view('json', array('msg' => $machine->get_model_stats($summary)));
+        $obj->view('json', ['msg' => $out]);
     }
 
 
@@ -63,9 +120,11 @@ class Machine_controller extends Module_controller
      **/
     public function report($serial_number = '')
     {
-        $machine = new Machine_model($serial_number);
+        $machine = Machine_model::where('machine.serial_number', $serial_number)
+            ->filter()
+            ->first();
         $obj = new View();
-        $obj->view('json', array('msg' => $machine->rs));
+        $obj->view('json', array('msg' => $machine));
     }
 
     /**
@@ -77,21 +136,12 @@ class Machine_controller extends Module_controller
     public function new_clients()
     {
         $lastweek = time() - 60 * 60 * 24 * 7;
-        $out = array();
-        $machine = new Machine_model();
-
-        $filter = get_machine_group_filter('AND');
-
-        $sql = "SELECT machine.serial_number, computer_name, reg_timestamp
-			FROM machine
-			LEFT JOIN reportdata USING (serial_number)
-			WHERE reg_timestamp > $lastweek
-			$filter
-			ORDER BY reg_timestamp DESC";
-
-        foreach ($machine->query($sql) as $obj) {
-            $out[]  = $obj;
-        }
+        $out = Machine_model::select('machine.serial_number', 'computer_name', 'reg_timestamp')
+            ->where('reg_timestamp', '>', $lastweek)
+            ->filter()
+            ->orderBy('reg_timestamp', 'desc')
+            ->get()
+            ->toArray();
 
         $obj = new View();
         $obj->view('json', array('msg' => $out));
@@ -109,13 +159,19 @@ class Machine_controller extends Module_controller
 
         // Legacy loop to do sort in php
         $tmp = array();
-        $machine = new Machine_model();
-        foreach ($machine->get_memory_stats() as $obj) {
+        $machine = Machine_model::selectRaw('physical_memory, count(1) as count')
+            ->filter()
+            ->groupBy('physical_memory')
+            ->orderBy('physical_memory', 'desc')
+            ->get()
+            ->toArray();
+        
+        foreach ($machine as $obj) {
         // Take care of mixed entries (string or int)
-            if (isset($tmp[$obj->physical_memory])) {
-                $tmp[$obj->physical_memory] += $obj->count;
+            if (isset($tmp[$obj['physical_memory']])) {
+                $tmp[$obj['physical_memory']] += $obj['count'];
             } else {
-                $tmp[$obj->physical_memory] = $obj->count;
+                $tmp[$obj['physical_memory']] = $obj['count'];
             }
         }
 
@@ -146,17 +202,15 @@ class Machine_controller extends Module_controller
      **/
     public function hw()
     {
-        $out = array();
-        $machine = new Machine_model();
-        $sql = "SELECT machine_name, count(1) as count
-			FROM machine
-			LEFT JOIN reportdata USING (serial_number)
-			".get_machine_group_filter()."
-			GROUP BY machine_name
-			ORDER BY count DESC";
-        $cnt = 0;
-        foreach ($machine->query($sql) as $obj) {
-            $out[] = array('label' => $obj->machine_name, 'count' => intval($obj->count));
+        $out = [];
+        $machine = Machine_model::selectRaw('machine_name, count(1) as count')
+            ->filter()
+            ->groupBy('machine_name')
+            ->orderBy('count', 'desc')
+            ->get()
+            ->toArray();
+        foreach ($machine as $obj) {
+            $out[] = array('label' => $obj['machine_name'], 'count' => intval($obj['count']));
         }
 
         $obj = new View();
@@ -170,23 +224,10 @@ class Machine_controller extends Module_controller
      **/
     public function os()
     {
-        $out = array();
-        $machine = new Machine_model();
-        $sql = "SELECT count(1) as count, os_version
-				FROM machine
-				LEFT JOIN reportdata USING (serial_number)
-				".get_machine_group_filter()."
-				GROUP BY os_version
-				ORDER BY os_version DESC";
-
-        foreach ($machine->query($sql) as $obj) {
-            $obj->os_version = $obj->os_version ? $obj->os_version : '0';
-            $out[] = array('label' => $obj->os_version, 'count' => intval($obj->count));
-        }
-
-
         $obj = new View();
-        $obj->view('json', array('msg' => $out));
+        $obj->view('json', [
+            'msg' => $this->_trait_stats('os_version')
+        ]);
     }
     /**
      * Return json array with os build breakdown
@@ -195,22 +236,25 @@ class Machine_controller extends Module_controller
      **/
     public function osbuild()
     {
-        $out = array();
-        $machine = new Machine_model();
-        $sql = "SELECT count(1) as count, buildversion
-        FROM machine
-        LEFT JOIN reportdata USING (serial_number)
-        ".get_machine_group_filter()."
-        GROUP BY buildversion
-        ORDER BY buildversion DESC";
-
-        foreach ($machine->query($sql) as $obj) {
-            $obj->buildversion = $obj->buildversion ? $obj->buildversion : '0';
-            $out[] = array('label' => $obj->buildversion, 'count' => intval($obj->count));
-        }
-
-
         $obj = new View();
-        $obj->view('json', array('msg' => $out));
+        $obj->view('json', [
+            'msg' => $this->_trait_stats('buildversion')
+        ]);
+    }
+
+    private function _trait_stats($what = 'os_version'){
+        $out = [];
+        $machine = Machine_model::selectRaw("count(1) as count, $what")
+            ->filter()
+            ->groupBy($what)
+            ->orderBy($what, 'desc')
+            ->get()
+            ->toArray();
+
+        foreach ($machine as $obj) {
+            $obj[$what] = $obj[$what] ? $obj[$what] : '0';
+            $out[] = ['label' => $obj[$what], 'count' => intval($obj['count'])];
+        }
+        return $out;
     }
 } // END class Machine_controller
