@@ -1,30 +1,23 @@
 <?php
 
 use CFPropertyList\CFPropertyList;
+use munkireport\processors\Processor;
 
-class Machine_processor
+class Machine_processor extends Processor
 {
-    private $serial_number;
-    
-    public function __construct($serial_number)
-    {
-        $this->serial_number = $serial_number;
-    }
-
     /**
      * Process data sent by postflight
      *
      * @param string data
      * @author abn290
      **/
-    public function process($plist)
+    public function run($plist)
     {
         $parser = new CFPropertyList();
         $parser->parse($plist, CFPropertyList::FORMAT_XML);
         $mylist = $parser->toArray();
 
-        // Remove serial_number from mylist, use the cleaned serial that was provided in the constructor.
-        unset($mylist['serial_number']);
+        $mylist['serial_number'] = $this->serial_number;
 
         // Set default computer_name
         if (! isset($mylist['computer_name']) or trim($mylist['computer_name']) == '') {
@@ -52,10 +45,9 @@ class Machine_processor
             $mylist['buildversion'] = preg_replace('/[^A-Za-z0-9]/', '', $mylist['buildversion']);
         }
 
-        $model = Machine_model::updateOrCreate(
+        Machine_model::updateOrCreate(
             ['serial_number' => $this->serial_number],
             $mylist
         );
     }
-
 }

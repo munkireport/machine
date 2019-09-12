@@ -1,10 +1,5 @@
 <?php $this->view('partials/head'); ?>
 
-<?php //Initialize models needed for the table
-new Machine_model;
-new Reportdata_model;
-?>
-
 <div class="container">
 
   <div class="row">
@@ -21,7 +16,7 @@ new Reportdata_model;
 		        <th data-i18n="username" data-colname='reportdata.long_username'></th>
 		        <th data-i18n="machine.model" data-colname='machine.machine_model'></th>
 		        <th data-i18n="description" data-colname='machine.machine_desc'></th>
-		        <th data-i18n="memory_physical" data-colname='machine.physical_memory'></th>
+		        <th data-i18n="physical_memory" data-colname='machine.physical_memory'></th>
 		        <th data-i18n="machine.cores" data-colname='machine.number_processors'></th>
 		        <th data-i18n="machine.arch" data-colname='machine.cpu_arch'></th>
 		        <th data-i18n="machine.cpu_speed" data-colname='machine.current_processor_speed'></th>
