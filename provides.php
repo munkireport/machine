@@ -1,6 +1,12 @@
 <?php
 
 return array(
+    'detail_widgets' => [
+        'machine_info_1' => ['view' => 'machine_detail_widget1'],
+        'machine_info_2' => ['view' => 'machine_detail_widget2'],
+        'hardware_detail' => ['view' => 'hardware_detail_widget'],
+        'software_detail' => ['view' => 'software_detail_widget'],
+    ],
     'listings' => array(
         'hardware' => array('view' => 'hardware_listing', 'i18n' => 'machine.hardware'),
     ),
