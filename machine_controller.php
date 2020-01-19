@@ -257,4 +257,30 @@ class Machine_controller extends Module_controller
         }
         return $out;
     }
+
+    /**
+     * Run machine lookup at Apple
+     *
+     **/
+    public function model_lookup($serial_number)
+    {
+        require_once(__DIR__ . '/helpers/model_lookup_helper.php');
+        $out = ['error' => '', 'model' => ''];
+        try {
+            $machine = Machine_model::select()
+                ->where('serial_number', $serial_number)
+                ->firstOrFail();
+            $machine->machine_desc = model_description_lookup($serial_number);
+            $machine->save();
+            $out['model'] = $machine->machine_desc;
+        } catch (\Throwable $th) {
+            // Record does not exist
+            $out['error'] = 'lookup_failed';
+        }
+        $obj = new View();
+        $obj->view('json', [
+            'msg' => $out
+        ]);
+
+    }
 } // END class Machine_controller
