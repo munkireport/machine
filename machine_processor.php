@@ -45,21 +45,22 @@ class Machine_processor extends Processor
             $mylist['buildversion'] = preg_replace('/[^A-Za-z0-9]/', '', $mylist['buildversion']);
         }
 
-        // Try to retrieve machine and add model
+        // Retrieve machine record (if existing)
         try {
             $machine = Machine_model::select()
                 ->where('serial_number', $this->serial_number)
                 ->firstOrFail();
-            if ($this->should_run_model_description_lookup($machine)){
-                require_once(__DIR__ . '/helpers/model_lookup_helper.php');
-                $mylist['machine_desc'] = machine_model_lookup($this->serial_number);
-                $machine->fill($mylist);
-            }
         } catch (\Throwable $th) {
+            $machine = new Machine_model();
+        }
+
+        // Check if we need to retrieve model from Apple
+        if ($this->should_run_model_description_lookup($machine)){
             require_once(__DIR__ . '/helpers/model_lookup_helper.php');
             $mylist['machine_desc'] = machine_model_lookup($this->serial_number);
-            Machine_model::create($mylist);
-        }
+        } 
+
+        $machine->fill($mylist)->save();
     }
 
     function should_run_model_description_lookup($machine)
