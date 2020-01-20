@@ -270,7 +270,7 @@ class Machine_controller extends Module_controller
             $machine = Machine_model::select()
                 ->where('serial_number', $serial_number)
                 ->firstOrFail();
-            $machine->machine_desc = model_description_lookup($serial_number);
+            $machine->machine_desc = machine_model_lookup($serial_number);
             $machine->save();
             $out['model'] = $machine->machine_desc;
         } catch (\Throwable $th) {

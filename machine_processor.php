@@ -52,12 +52,12 @@ class Machine_processor extends Processor
                 ->firstOrFail();
             if ($this->should_run_model_description_lookup($machine)){
                 require_once(__DIR__ . '/helpers/model_lookup_helper.php');
-                $mylist['machine_desc'] = model_description_lookup($this->serial_number);
+                $mylist['machine_desc'] = machine_model_lookup($this->serial_number);
                 $machine->fill($mylist);
             }
         } catch (\Throwable $th) {
             require_once(__DIR__ . '/helpers/model_lookup_helper.php');
-            $mylist['machine_desc'] = model_description_lookup($this->serial_number);
+            $mylist['machine_desc'] = machine_model_lookup($this->serial_number);
             Machine_model::create($mylist);
         }
     }

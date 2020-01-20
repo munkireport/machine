@@ -2,10 +2,11 @@
 
 use munkireport\lib\Request;
 
-function model_description_lookup($serial)
+function machine_model_lookup($serial)
 {
-    if (strpos($serial, 'VMWV') === 0) {
-        return 'VMware virtual machine';
+    // VMs have mixed case serials sometime
+    if (strtoupper($serial) != $serial) {    
+        return "Virtual Machine";
     }
 
     $options = [
