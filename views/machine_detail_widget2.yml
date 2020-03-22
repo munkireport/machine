@@ -1,0 +1,11 @@
+type: table
+class: mr-computer_name
+table:
+    - i18n_header: last_seen
+      class: mr-check-in_date
+    - i18n_header: uptime
+      class: mr-uptime
+    - i18n_header: business_unit.machine_group
+      class: mr-machine_group
+    - i18n_header: reg_date
+      class: mr-reg_date

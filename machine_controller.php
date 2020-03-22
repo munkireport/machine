@@ -184,6 +184,20 @@ class Machine_controller extends Module_controller
                     $out[] = array('label' => $mem . ' GB', 'data' => array(array(intval($memcnt), $cnt++)));
                 }
                 break;
+            
+            case 'button':
+                $labels = ['< 4GB' => 0, '4GB +' => 0, '8GB +' => 0];
+                foreach ($tmp as $mem => $memcnt) {
+                    $memcnt = intval($memcnt);
+                    if( $mem < 4 ){ $labels['< 4GB'] += $memcnt;}
+                    if( $mem < 8 && $mem <= 4 ){ $labels['4GB +'] += $memcnt;}
+                    if( $mem >= 8 ){ $labels['8GB +'] += $memcnt;}
+                }
+
+                foreach ($labels as $label => $count) {
+                    $out[] = ['label' => $label, 'count' => $count]; 
+                }
+                break;
 
             default:
                 foreach ($tmp as $mem => $memcnt) {
