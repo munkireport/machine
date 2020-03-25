@@ -1,7 +1,7 @@
 <div class="col-lg-4">
     <div class="row">
         <div class="col-xs-6">
-            <img class="img-responsive" src="<?php printf(conf('apple_hardware_icon_url'), substr($serial_number, 8)); ?>" />
+            <img id="apple_hardware_icon" class="img-responsive">
         </div>
         <div class="col-xs-6" style="font-size: 1.4em; overflow: hidden">
             <span class="label label-info">macOS <span class="mr-os_version"></span></span><br>
@@ -14,8 +14,12 @@
 </div>
 
 <script>
-    	// ------------------------------------ Refresh machine description
 
+    var apple_hardware_icon_url = "<?=conf('apple_hardware_icon_url')?>";
+    $('#apple_hardware_icon')
+        .attr('src', apple_hardware_icon_url.replace('%s&amp;', serialNumber.substring(8) + '&' ))
+    
+    // ------------------------------------ Refresh machine description
 	$('.mr-refresh-desc')
         .attr('href', appUrl + '/module/machine/model_lookup/' + serialNumber)
         .click(function(e){
