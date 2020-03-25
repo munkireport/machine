@@ -1,0 +1,19 @@
+detail_widgets: 
+    machine_info_1: {view: machine_detail_widget1}
+    machine_info_2: {view: machine_detail_widget2}
+    hardware_detail: {view: hardware_detail_widget}
+    software_detail: {view: software_detail_widget}
+listings:
+    hardware: {view: hardware_listing, i18n: machine.hardware}
+widgets: 
+    duplicated_computernames: {view: duplicated_computernames_widget}
+    hardware_basemodel: {view: hardware_basemodel_widget}
+    hardware_model: {view: hardware_model_widget}
+    hardware_type: {view: hardware_type_widget}
+    installed_memory: {view: installed_memory_widget}
+    memory: {view: memory_widget}
+    new_clients: {view: new_clients_widget}
+    os: {view: os_widget}
+    osbuild: {view: osbuild_widget}
+reports: 
+    hardware: {view: hardware, i18n: machine.hardware_report}
