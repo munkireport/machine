@@ -4,13 +4,13 @@
             <img id="apple_hardware_icon" class="img-responsive">
         </div>
         <div class="col-xs-6" style="font-size: 1.4em; overflow: hidden">
-            <span class="label label-info">macOS <span class="mr-os_version"></span></span><br>
-            <span class="label label-info"><span class="mr-physical_memory"></span> GB</span><br>
-            <span class="label label-info"><span class="mr-serial_number"></span></span><br>
-            <span class="label label-info"><span class="mr-remote_ip"></span></span><br>
+            <span class="label label-info">macOS <span class="machine-os_version"></span></span><br>
+            <span class="label label-info"><span class="machine-physical_memory"></span> GB</span><br>
+            <span class="label label-info"><span class="machine-serial_number"></span></span><br>
+            <span class="label label-info"><span class="reportdata-remote_ip"></span></span><br>
         </div>
     </div>
-    <span class="mr-machine_desc"></span> <a class="mr-refresh-desc" href=""><i class="fa fa-refresh"></i></a>
+    <span class="machine-machine_desc"></span> <a class="machine-refresh-desc" href=""><i class="fa fa-refresh"></i></a>
 </div>
 
 <script>
@@ -20,18 +20,18 @@
         .attr('src', apple_hardware_icon_url.replace('%s&amp;', serialNumber.substring(8) + '&' ))
     
     // ------------------------------------ Refresh machine description
-	$('.mr-refresh-desc')
+	$('.machine-refresh-desc')
         .attr('href', appUrl + '/module/machine/model_lookup/' + serialNumber)
         .click(function(e){
             e.preventDefault();
             // show that we're doing a lookup
-            $('.mr-machine_desc').text(i18n.t('loading'));
+            $('.machine-machine_desc').text(i18n.t('loading'));
             $.getJSON( appUrl + '/module/machine/model_lookup/' + serialNumber, function( data ) {
                 if(data['error'] == ''){
-                    $('.mr-machine_desc').text(data['model']);
+                    $('.machine-machine_desc').text(data['model']);
                 }
                 else{
-                    $('.mr-machine_desc').text(data['error']);
+                    $('.machine-machine_desc').text(data['error']);
                 }
             });
         });

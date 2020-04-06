@@ -120,11 +120,11 @@ class Machine_controller extends Module_controller
      **/
     public function report($serial_number = '')
     {
-        $machine = Machine_model::where('machine.serial_number', $serial_number)
-            ->filter()
-            ->first();
-        $obj = new View();
-        $obj->view('json', array('msg' => $machine));
+        jsonView(
+            Machine_model::where('machine.serial_number', $serial_number)
+                ->filter()
+                ->first()
+        );
     }
 
     /**
