@@ -54,4 +54,10 @@ $(document).on('appReady', function(e, lang) {
         $('.reportdata-remote_ip').text(data.remote_ip);
     });
 
+    // Get machinegroup name
+    $.getJSON(appUrl + '/unit/get_machine_groups', function( data){
+        var machine_group = parseInt($('.machine-machine_group').text())
+        var name = data.find(x => x.groupid === machine_group).name;
+        $('.machine-machine_group').text(name)
+    })
 });
