@@ -27,7 +27,6 @@ class Machine_model extends Eloquent
         'machine_name',
         'packages',
         'buildversion',
-        'status',
     ];
 
     public $timestamps = false;
