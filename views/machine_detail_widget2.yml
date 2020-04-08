@@ -13,4 +13,4 @@ table:
     - i18n_header: reg_date
       class: reportdata-reg_date
     - i18n_header: status
-      class: machine-status
+      class: reportdata-status
