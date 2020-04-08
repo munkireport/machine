@@ -55,9 +55,9 @@ $(document).on('appReady', function(e, lang) {
     });
 
     // Get machinegroup name
-    $.getJSON(appUrl + '/unit/get_machine_groups', function( data){
+    $.getJSON(appUrl + '/unit/get_machine_groups', function( data ){
         var machine_group = parseInt($('.machine-machine_group').text())
-        var name = data.find(x => x.groupid === machine_group).name;
+        var name = data.find(x => parseInt(x.groupid) === machine_group).name;
         $('.machine-machine_group').text(name)
     })
 });
