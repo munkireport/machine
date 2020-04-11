@@ -1,4 +1,4 @@
-$(document).on('appReady', function(e, lang) {
+$(document).on('appReady ', function(e, lang) {
 
     $.getJSON( appUrl + '/module/machine/report/' + serialNumber, function( data ) {
 
@@ -33,7 +33,9 @@ $(document).on('appReady', function(e, lang) {
             $('.machine-uptime').text(i18n.t('unavailable'));
         }
     });
+});
 
+$(document).on('appReady appUpdate', function(e, lang) {
     // Get reportdata
     $.getJSON( appUrl + '/module/reportdata/report/' + serialNumber, function( data ) {
 
@@ -45,19 +47,26 @@ $(document).on('appReady', function(e, lang) {
         // Registration date
         var msecs = moment(data.reg_timestamp * 1000);
         $('.reportdata-reg_date').html('<time title="'+msecs.format('LLLL')+'" >'+msecs.fromNow()+'</time>');
- 
+
         // Check-in date
         var msecs = moment(data.timestamp * 1000);
         $('.reportdata-check-in_date').html('<time title="'+msecs.format('LLLL')+'" >'+msecs.fromNow()+'</time>');
 
         // Remote IP
         $('.reportdata-remote_ip').text(data.remote_ip);
-    });
 
-    // Get machinegroup name
-    $.getJSON(appUrl + '/unit/get_machine_groups', function( data ){
-        var machine_group = parseInt($('.machine-machine_group').text())
-        var name = data.find(x => parseInt(x.groupid) === machine_group).name;
-        $('.machine-machine_group').text(name)
-    })
+        // Get machinegroup name
+        $.getJSON(appUrl + '/unit/get_machine_groups', function( data ){
+            var machine_group = parseInt($('.machine-machine_group').text())
+            var name = data.find(x => parseInt(x.groupid) === machine_group).name;
+            $('.machine-machine_group').text(name)
+        })
+
+        // Status
+        var machineStatus = { '0': 'in_use', '1': 'archived'};
+        $('.reportdata-status').text(
+            i18n.t('machine.status.' + machineStatus[$('.reportdata-status').text()])
+        );
+
+    });
 });

@@ -122,7 +122,7 @@ class Machine_controller extends Module_controller
     {
         jsonView(
             Machine_model::where('machine.serial_number', $serial_number)
-                ->filter()
+                ->filter('groupOnly')
                 ->first()
         );
     }
