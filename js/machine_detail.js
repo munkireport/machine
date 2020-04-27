@@ -64,8 +64,8 @@ $(document).on('appReady appUpdate', function(e, lang) {
 
         // Status
         var machineStatus = { '0': 'in_use', '1': 'archived'};
-        $('.reportdata-status').text(
-            i18n.t('machine.status.' + machineStatus[$('.reportdata-status').text()])
+        $('.reportdata-archive_status').text(
+            i18n.t('machine.status.' + machineStatus[$('.reportdata-archive_status').text()])
         );
 
     });
