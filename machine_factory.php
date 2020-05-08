@@ -3,19 +3,19 @@
 $factory->define(Machine_model::class, function (Faker\Generator $faker) {
     $computerName = $faker->unique()->word;
     $machines = [
-        ['iMac9,1', 'iMac (20-inch, Mid 2009)'],
-        ['Macmini7,1', 'Mac mini (Late 2014)'],
-        ['Macmini5,1', 'Mac mini (Mid 2011)'],
-        ['MacBookPro12,1', 'MacBook Pro (Retina, 13-inch, Early 2015)'],
-        ['MacBookPro8,1', 'MacBook Pro (13-inch, Late 2011)'],
-        ['MacBookPro9,2', 'MacBook Pro (13-inch, Mid 2012)'],
-        ['Macmini6,2', 'Mac mini (Late 2012)'],
-        ['MacBook7,1', 'MacBook (13-inch, Mid 2010)'],
-        ['iMac14,2', 'iMac (27-inch, Late 2013)'],
-        ['iMac10,1', 'iMac (21.5-inch, Late 2009)'],
-        ['iMac14,4', 'iMac (21.5-inch, Mid 2014)'],
-        ['iMac12,1', 'iMac (21.5-inch, Mid 2011)'],
-        ['iMac16,2', 'iMac (21.5-inch, Late 2015)'],
+        ['iMac', 'iMac9,1', 'iMac (20-inch, Mid 2009)'],
+        ['Macmini', 'Macmini7,1', 'Mac mini (Late 2014)'],
+        ['Macmini', 'Macmini5,1', 'Mac mini (Mid 2011)'],
+        ['MacBook', 'MacBookPro12,1', 'MacBook Pro (Retina, 13-inch, Early 2015)'],
+        ['MacBook', 'MacBookPro8,1', 'MacBook Pro (13-inch, Late 2011)'],
+        ['MacBook', 'MacBookPro9,2', 'MacBook Pro (13-inch, Mid 2012)'],
+        ['Macmini', 'Macmini6,2', 'Mac mini (Late 2012)'],
+        ['MacBook', 'MacBook7,1', 'MacBook (13-inch, Mid 2010)'],
+        ['iMac', 'iMac14,2', 'iMac (27-inch, Late 2013)'],
+        ['iMac', 'iMac10,1', 'iMac (21.5-inch, Late 2009)'],
+        ['iMac', 'iMac14,4', 'iMac (21.5-inch, Mid 2014)'],
+        ['iMac', 'iMac12,1', 'iMac (21.5-inch, Mid 2011)'],
+        ['iMac', 'iMac16,2', 'iMac (21.5-inch, Late 2015)'],
     ];
 
     $oses = [
@@ -23,7 +23,7 @@ $factory->define(Machine_model::class, function (Faker\Generator $faker) {
         ['101301', '17B48'],
     ];
 
-    list($machine_model, $machine_desc) = $faker->randomElement($machines);
+    list($machine_name, $machine_model, $machine_desc) = $faker->randomElement($machines);
     list($os_version, $build) = $faker->randomElement($oses);
 
     return [
@@ -44,7 +44,7 @@ $factory->define(Machine_model::class, function (Faker\Generator $faker) {
         'bus_speed' => $faker->randomElement([null, '1.07 Ghz']),
         'computer_name' => $computerName,
         'l2_cache' => $faker->randomElement([null, '3 MB', '6 MB']),
-        'machine_name' => 'iMac',
+        'machine_name' => $machine_name,
         'packages' => 1,
         'buildversion' => $build,
     ];
