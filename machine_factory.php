@@ -27,7 +27,6 @@ $factory->define(Machine_model::class, function (Faker\Generator $faker) {
     list($os_version, $build) = $faker->randomElement($oses);
 
     return [
-        'serial_number' => 'override',
         'hostname' => $computerName . '.local',
         'machine_model' => $machine_model,
         'machine_desc' => $machine_desc,
