@@ -1,14 +1,13 @@
 <?php
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 $factory->define(Machine_model::class, function (Faker\Generator $faker) {
-    $computerName = $faker->unique()->word;
     $machines = [
         ['iMac', 'iMac9,1', 'iMac (20-inch, Mid 2009)'],
         ['Macmini', 'Macmini7,1', 'Mac mini (Late 2014)'],
         ['Macmini', 'Macmini5,1', 'Mac mini (Mid 2011)'],
-        ['MacBook', 'MacBookPro12,1', 'MacBook Pro (Retina, 13-inch, Early 2015)'],
-        ['MacBook', 'MacBookPro8,1', 'MacBook Pro (13-inch, Late 2011)'],
-        ['MacBook', 'MacBookPro9,2', 'MacBook Pro (13-inch, Mid 2012)'],
+        ['MacBook Pro', 'MacBookPro12,1', 'MacBook Pro (Retina, 13-inch, Early 2015)'],
+        ['MacBook Pro', 'MacBookPro8,1', 'MacBook Pro (13-inch, Late 2011)'],
+        ['MacBook Pro', 'MacBookPro9,2', 'MacBook Pro (13-inch, Mid 2012)'],
         ['Macmini', 'Macmini6,2', 'Mac mini (Late 2012)'],
         ['MacBook', 'MacBook7,1', 'MacBook (13-inch, Mid 2010)'],
         ['iMac', 'iMac14,2', 'iMac (27-inch, Late 2013)'],
@@ -21,10 +20,13 @@ $factory->define(Machine_model::class, function (Faker\Generator $faker) {
     $oses = [
         ['101206', '16G29'],
         ['101301', '17B48'],
+        ['101503', '19D76'],
     ];
 
     list($machine_name, $machine_model, $machine_desc) = $faker->randomElement($machines);
     list($os_version, $build) = $faker->randomElement($oses);
+
+    $computerName = $faker->firstName() . '\'s ' . $machine_name;
 
     return [
         'hostname' => $computerName . '.local',
