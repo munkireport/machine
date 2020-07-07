@@ -9,12 +9,19 @@ $factory->define(Machine_model::class, function (Faker\Generator $faker) {
         ['101503', '19D76'],
     ];
 
-    list($modelcode, $machine_name, $machine_model, $machine_desc) = FakerDataStore::get('machine_factory', 'machine');
+    // Allow standalone
+    try {
+        list($modelcode, $machine_name, $machine_model, $machine_desc) = FakerDataStore::get('machine_factory', 'machine');
+    } catch (\Throwable $th) {
+        list($modelcode, $machine_name, $machine_model, $machine_desc) = ['P7QM', 'MacPro', 'MacPro7,1', 'Mac Pro (2019)'];
+    }
+    
     list($os_version, $build) = $faker->randomElement($oses);
 
     $computerName = $faker->firstName() . '\'s ' . $machine_name;
 
     return [
+        'serial_number' => $faker->unique()->regexify('[A-Z0-9]{3}[CDFGHJKLMNPQRSTVWXYZ][123456789CDFGHJKLMNPQRTVWXY][A-Z0-9]{3}P7QM'),
         'hostname' => $faker->domainWord() . '.local',
         'machine_model' => $machine_model,
         'machine_desc' => $machine_desc,
