@@ -24,6 +24,11 @@ class Machine_processor extends Processor
             $mylist['computer_name'] = 'No name';
         }
 
+        // Fix Apple Silicon processor count - processor count is the first number
+        if (isset($mylist['number_processors'])) {
+            $mylist['number_processors'] = preg_replace('/^[^0-9]*(\d+)/', '$1', $mylist['number_processors']);
+        }
+
         // Convert memory string (4 GB) to int
         if (isset($mylist['physical_memory'])) {
             $mylist['physical_memory'] = intval($mylist['physical_memory']);
