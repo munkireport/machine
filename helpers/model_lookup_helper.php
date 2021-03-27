@@ -17,7 +17,7 @@ function machine_model_lookup($serial)
     ];
 
     $client = new Request();
-    $result = $client->get('http://km.support.apple.com/kb/index', $options);
+    $result = $client->get('https://km.support.apple.com/kb/index', $options);
 
     if ( ! $result) {
         return 'model_lookup_failed';
