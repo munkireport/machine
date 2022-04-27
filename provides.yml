@@ -6,6 +6,7 @@ detail_widgets:
 listings:
     hardware: {view: hardware_listing, i18n: machine.hardware}
 widgets: 
+    cpu_arch: {view: cpu_arch_widget}
     duplicated_computernames: {view: duplicated_computernames_widget}
     hardware_basemodel: {view: hardware_basemodel_widget}
     hardware_model: {view: hardware_model_widget}
