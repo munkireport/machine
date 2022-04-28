@@ -1,0 +1,13 @@
+type: button
+widget_id: cpu-arch-widget
+api_url: /module/machine/cpu_arch
+i18n_title: cpu.arch
+listing_link: /show/listing/machine/hardware
+icon: fa-microchip
+buttons:
+  - label: Intel
+    search_component: x86_64
+    class: btn-info  
+  - label: Apple Silicon 
+    search_component: arm64 
+    class: btn-info

@@ -10,3 +10,5 @@ row3:
     hardware_type:
     hardware_age:
     memory:
+row4:
+    cpu_arch:

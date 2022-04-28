@@ -232,6 +232,22 @@ class Machine_controller extends Module_controller
     }
 
     /**
+     * Return json array with cpu arch
+     *
+     * @author tuxudo
+     **/
+    public function cpu_arch()
+    {
+        jsonView(
+            Machine_model::selectRaw("COUNT(CASE WHEN `cpu_arch` = 'x86_64' THEN 1 END) AS 'Intel'")
+                ->selectRaw("COUNT(CASE WHEN `cpu_arch` = 'arm64' THEN 1 END) AS 'Apple Silicon'")
+                ->filter()
+                ->first()
+                ->toLabelCount()
+        );
+    }
+
+    /**
      * Return json array with os breakdown
      *
      * @author AvB
