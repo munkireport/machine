@@ -313,4 +313,30 @@ class Machine_controller extends Module_controller
         ]);
 
     }
+
+    /**
+     * Run machine lookup at Apple
+     *
+     **/
+    public function get_model_icon($serial_number)
+    {
+        require_once(__DIR__ . '/helpers/model_lookup_helper.php');
+        $out = ['error' => '', 'url' => ''];
+        try {
+            $machine = Machine_model::select()
+                ->where('serial_number', $serial_number)
+                ->firstOrFail();
+            $machine->img_url = machine_icon_lookup($serial_number);
+            $machine->save();
+            $out['url'] = $machine->img_url;
+        } catch (\Throwable $th) {
+            // Record does not exist
+            $out['error'] = 'lookup_failed';
+        }
+        $obj = new View();
+        $obj->view('json', [
+            'msg' => $out
+        ]);
+
+    }
 } // END class Machine_controller

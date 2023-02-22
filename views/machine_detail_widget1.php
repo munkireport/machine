@@ -15,12 +15,12 @@
 
 <script>
 
-    var apple_hardware_icon_url = "<?=conf('apple_hardware_icon_url')?>";
-    $('#apple_hardware_icon')
-        .attr('src', apple_hardware_icon_url.replace('%s&amp;', serialNumber.substring(8) + '&' ))
-    
+    $.getJSON(appUrl + '/module/machine/get_model_icon/' + serialNumber, function(data) {
+        $('#apple_hardware_icon')
+          .attr('src', data['url'])
+    });
     // ------------------------------------ Refresh machine description
-	$('.machine-refresh-desc')
+        $('.machine-refresh-desc')
         .attr('href', appUrl + '/module/machine/model_lookup/' + serialNumber)
         .click(function(e){
             e.preventDefault();
