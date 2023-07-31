@@ -4,11 +4,11 @@ row1:
     external_displays_count:
 row2:
     hardware_model:
-    hardware_basemodel:
     hardware_warranty:
+    cpu_arch:
 row3:
     hardware_type:
-    hardware_age:
     memory:
 row4:
-    cpu_arch:
+    hardware_age:
+    hardware_basemodel:
