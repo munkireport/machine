@@ -8,6 +8,8 @@ table:
     - i18n_header: cpu.type
       class: machine-number_processors 
       append: <span data-i18n="cpu.core"></span>
+    - i18n_header: cpu.arch
+      class: machine-cpu_arch
     - i18n_header: physical_memory
       class: machine-physical_memory
       append: " GB"
