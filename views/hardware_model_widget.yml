@@ -5,3 +5,4 @@ i18n_title: machine.hardware_widget_title
 icon: fa-laptop
 listing_link: /show/listing/machine/hardware
 search_key: label
+badge: count
