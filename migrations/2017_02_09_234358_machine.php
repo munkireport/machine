@@ -102,7 +102,7 @@ class Machine extends Migration
             $table->index(['buildversion']);
         });
     }
-    
+
     public function down()
     {
         $capsule = new Capsule();

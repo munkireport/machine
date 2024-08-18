@@ -22,7 +22,7 @@ class Machine_processor extends Processor
         // Set default computer_name
         if (! isset($mylist['computer_name']) or trim($mylist['computer_name']) == '') {
             $mylist['computer_name'] = 'No name';
-        }        
+        }
 
         // Fix Apple Silicon processor count - processor count is the first number
         if (isset($mylist['number_processors'])) {

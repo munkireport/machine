@@ -45,7 +45,7 @@ class Machine_controller extends Module_controller
             ->orderBy('count', 'desc')
             ->get()
             ->toArray();
-    
+
         $obj = new View();
         $obj->view('json', ['msg' => $machine]);
     }
@@ -74,7 +74,6 @@ class Machine_controller extends Module_controller
             $model_list = array();
             foreach ($out as $key => $obj) {
                 // Mac mini Server (Late 2012)
-                //
                 $suffix = "";
                 if(preg_match('/^(.+) \((.+)\)/', $obj['label'], $matches))
                 {
@@ -186,12 +185,12 @@ class Machine_controller extends Module_controller
                 break;
             
             case 'button':
-                $labels = ['< 4GB' => 0, '4GB +' => 0, '8GB +' => 0];
+                $labels = ['< 8GB' => 0, '8GB +' => 0, '16GB +' => 0];
                 foreach ($tmp as $mem => $memcnt) {
                     $memcnt = intval($memcnt);
-                    if( $mem < 4 ){ $labels['< 4GB'] += $memcnt;}
-                    if( $mem < 8 && $mem <= 4 ){ $labels['4GB +'] += $memcnt;}
-                    if( $mem >= 8 ){ $labels['8GB +'] += $memcnt;}
+                    if( $mem < 8 ){ $labels['< 8GB'] += $memcnt;}
+                    if( $mem < 16 && $mem <= 8 ){ $labels['8GB +'] += $memcnt;}
+                    if( $mem >= 16 ){ $labels['16GB +'] += $memcnt;}
                 }
 
                 foreach ($labels as $label => $count) {

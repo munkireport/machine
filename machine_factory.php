@@ -15,7 +15,7 @@ $factory->define(Machine_model::class, function (Faker\Generator $faker) {
     } catch (\Throwable $th) {
         list($modelcode, $machine_name, $machine_model, $machine_desc) = ['P7QM', 'MacPro', 'MacPro7,1', 'Mac Pro (2019)'];
     }
-    
+
     list($os_version, $build) = $faker->randomElement($oses);
 
     $computerName = $faker->firstName() . '\'s ' . $machine_name;
