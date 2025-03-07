@@ -1,5 +1,7 @@
 <?php
 
+use Exception;
+
 /**
  * Machine module class
  *
@@ -8,6 +10,8 @@
  **/
 class Machine_controller extends Module_controller
 {
+    protected $view_path;
+    protected $module_path;
 
     /*** Protect methods with auth! ****/
     public function __construct()
@@ -337,5 +341,155 @@ class Machine_controller extends Module_controller
             'msg' => $out
         ]);
 
+    }
+
+    /**
+     * Save image to cache
+     *
+     * @return void
+     * @author 
+     **/
+    public function save_image_to_cache()
+    {
+        try {
+            if (!$this->authorized()) {
+                http_response_code(401);
+                die(json_encode(['success' => false, 'error' => 'Unauthorized']));
+            }
+
+            $image_url = $_POST['image_url'] ?? '';
+            $cache_path = $_POST['cache_path'] ?? '';
+
+            // Validate inputs
+            if (empty($image_url) || empty($cache_path)) {
+                throw new Exception("Missing required parameters");
+            }
+
+            // Validate cache_path to prevent directory traversal
+            if (!preg_match('/^[A-Za-z0-9]+(?:Pro|Air|mini|Studio)?\/[A-Za-z0-9,]+\-[a-z]+\/[a-zA-Z0-9_\-\.]+\.png$/', $cache_path) || strpos($cache_path, '..') !== false) {
+                throw new Exception("Invalid cache path format: " . $cache_path);
+            }
+
+            // Set up paths
+            if (defined('PUBLIC_ROOT')) {
+                $base_cache_dir = PUBLIC_ROOT . '/apple_img_cache/';
+            } elseif (defined('APP_ROOT')) {
+                $base_cache_dir = APP_ROOT . '/public/apple_img_cache/';
+            } else {
+                throw new Exception("Application configuration error: ROOT paths not defined");
+            }
+
+            $full_cache_path = $base_cache_dir . $cache_path;
+            $temp_path = $full_cache_path . '.tmp';
+
+            // Create cache directory structure if it doesn't exist
+            $dir = dirname($full_cache_path);
+            if (!file_exists($dir)) {
+                if (!mkdir($dir, 0755, true)) {
+                    throw new Exception("Failed to create cache directory");
+                }
+            }
+
+            // Download image with proper error handling
+            $context = stream_context_create([
+                'http' => [
+                    'timeout' => 30,
+                    'user_agent' => 'Mozilla/5.0 MunkiReport/6.0',
+                    'ignore_errors' => true
+                ]
+            ]);
+
+            $image_data = @file_get_contents($image_url, false, $context);
+            if ($image_data === false) {
+                throw new Exception("Failed to download image");
+            }
+
+            // Validate image data
+            if (!$this->is_valid_image($image_data)) {
+                throw new Exception("Invalid or corrupt image data");
+            }
+
+            // Write to temporary file first (atomic write)
+            if (file_put_contents($temp_path, $image_data) === false) {
+                throw new Exception("Failed to write temporary file");
+            }
+
+            // Set proper permissions
+            if (!chmod($temp_path, 0644)) {
+                unlink($temp_path);
+                throw new Exception("Failed to set file permissions");
+            }
+
+            // Atomic rename
+            if (!rename($temp_path, $full_cache_path)) {
+                unlink($temp_path);
+                throw new Exception("Failed to move file to final location");
+            }
+
+            echo json_encode([
+                'success' => true,
+                'path' => $cache_path
+            ]);
+
+        } catch (Exception $e) {
+            // Clean up temporary file if it exists
+            if (isset($temp_path) && file_exists($temp_path)) {
+                @unlink($temp_path);
+            }
+
+            http_response_code(500);
+            echo json_encode([
+                'success' => false,
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * Validate that the data is actually an image
+     *
+     * @param string $data Image data
+     * @return boolean
+     * @author 
+     **/
+    private function is_valid_image($data)
+    {
+        if (empty($data)) {
+            return false;
+        }
+
+        $tmp = tempnam(sys_get_temp_dir(), 'img_validate_');
+        if (!$tmp) {
+            return false;
+        }
+
+        try {
+            file_put_contents($tmp, $data);
+            $info = @getimagesize($tmp);
+            unlink($tmp);
+            return $info && $info[2] === IMAGETYPE_PNG;
+        } catch (Exception $e) {
+            @unlink($tmp);
+            return false;
+        }
+    }
+
+    /**
+     * Get module configuration
+     *
+     * @return void
+     **/
+    public function get_config()
+    {
+        $obj = new View();
+        
+        if (! $this->authorized()) {
+            $obj->view('json', array('msg' => 'Not authorized'));
+            return;
+        }
+
+        $obj->view('json', array('msg' => array(
+            'image_cache' => conf('machine.image_cache', true)
+        )));
     }
 } // END class Machine_controller

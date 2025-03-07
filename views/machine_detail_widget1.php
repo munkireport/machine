@@ -89,7 +89,7 @@
 
                             // Save to cache
                             const response = await $.ajax({
-                                url: `${appUrl}/module/ibridge/save_image_to_cache`,
+                                url: `${appUrl}/module/machine/save_image_to_cache`,
                                 type: 'POST',
                                 data: {
                                     image_url: appleImageUrl,
