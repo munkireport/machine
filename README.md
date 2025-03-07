@@ -11,6 +11,9 @@ Setting `IMAGE_CACHE` to `FALSE` will load images directly from Apple's servers.
 ```
 IMAGE_CACHE=TRUE
 ```
+![image](https://github.com/user-attachments/assets/8ccd876c-fa47-4f4a-abaf-159e4f7b6c5c)
+
+
 
 Table Schema
 -----
