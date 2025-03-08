@@ -18,6 +18,11 @@
 </div>
 
 <script>
+    // Track if we've already loaded an image
+    var imageLoaded = false;
+    var machineDataCache = null;
+    var cachingEnabled = false; // Default to caching disabled
+    
     // Function to check if an image exists and is valid
     function checkImageExists(url) {
         return new Promise((resolve, reject) => {
@@ -41,117 +46,69 @@
         });
     }
 
-    // Function to load fallback image
+    // Function to load fallback image - only called when needed
     function loadFallbackImage() {
+        if (imageLoaded) return; // Don't override if we already have an image
+        
         $.getJSON(appUrl + '/module/machine/get_model_icon/' + serialNumber, function(data) {
             if (data && data.url) {
                 $('#apple_hardware_icon').attr('src', data.url);
+                imageLoaded = true;
             }
         });
     }
 
-    // Function to handle device image loading and caching
-    async function handleDeviceImage(machine_desc, machine_model, color_url) {
+    // Check if image caching is enabled
+    async function checkCachingEnabled() {
         try {
-            // Construct paths - use encoded model only for loading images
-            const encodedModel = machine_model.replace(',', '%2C');
-            const modelName = machine_desc.split(' (')[0].replaceAll(' ', '');
-            const appleImageUrl = `https://statici.icloud.com/fmipmobile/deviceImages-9.0/${modelName}/${machine_model}-${color_url}/online-infobox__2x.png`;
-
-            // Check if image caching is enabled
             const response = await $.ajax({
                 url: `${appUrl}/module/machine/get_config`,
-                type: 'GET'
+                type: 'GET',
+                cache: false
             });
-
-            // If caching is disabled, try Apple's image directly
-            if (!response.image_cache) {
-                try {
-                    await checkImageExists(appleImageUrl);
-                    $('#apple_hardware_icon').attr('src', appleImageUrl);
-                    return true;
-                } catch (e) {
-                    console.error("Failed to load image from Apple:", e);
-                    return false;
-                }
+            
+            // Extract the image_cache value from the response
+            let cacheValue = null;
+            
+            if (response.msg && response.msg.image_cache !== undefined) {
+                cacheValue = response.msg.image_cache;
+            } else if (response.image_cache !== undefined) {
+                cacheValue = response.image_cache;
+            } else {
+                cacheValue = false;
             }
-
-            // Caching is enabled, proceed with caching logic
-            const cachePath = `${modelName}/${machine_model}-${color_url}/online-infobox__2x.png`;
-            const cachedImageUrl = `${appUrl}/apple_img_cache/${modelName}/${encodedModel}-${color_url}/online-infobox__2x.png`;
-
-            // Try cached image first
-            try {
-                await checkImageExists(cachedImageUrl);
-                $('#apple_hardware_icon').attr('src', cachedImageUrl);
-                return true;
-            } catch (e) {
-                // Cache miss, continue to fetch from Apple
+            
+            // Convert to boolean based on the value
+            if (cacheValue === true || cacheValue === "TRUE") {
+                cachingEnabled = true;
+            } else {
+                cachingEnabled = false;
             }
-
-            // Try Apple's image
-            try {
-                await checkImageExists(appleImageUrl);
-                $('#apple_hardware_icon').attr('src', appleImageUrl);
-
-                // Save to cache
-                const cacheResponse = await $.ajax({
-                    url: `${appUrl}/module/machine/save_image_to_cache`,
-                    type: 'POST',
-                    data: {
-                        image_url: appleImageUrl,
-                        cache_path: cachePath
-                    }
-                });
-
-                if (!cacheResponse.success && cacheResponse.error) {
-                    throw new Error(cacheResponse.error);
-                }
-                return true;
-            } catch (e) {
-                console.error("Failed to load or cache device image:", e);
-                return false;
-            }
+            
+            return cachingEnabled;
         } catch (e) {
-            console.error("Error handling device image:", e);
+            // Default to false if error (to be safe)
+            cachingEnabled = false;
             return false;
         }
     }
 
-    // Get device color from ibridge data
-    function getDeviceColor() {
-        if (window.ibridge_data && window.ibridge_data.length > 0) {
-            for (let i = 0; i < window.ibridge_data.length; i++) {
-                if (window.ibridge_data[i].device_color) {
-                    return window.ibridge_data[i].device_color;
-                }
-            }
-        }
-        return null;
-    }
-
-    // Main function to load device image
-    async function loadDeviceImage(machineData) {
-        if (!machineData || !machineData.machine_desc || !machineData.machine_model) {
+    // Function to handle device image loading and caching
+    async function handleDeviceImage(machineData, deviceColor) {
+        if (!machineData || !machineData.machine_desc || !machineData.machine_model || !deviceColor) {
             loadFallbackImage();
             return;
-        }
-
-        const deviceColor = getDeviceColor();
-        if (!deviceColor) {
-            loadFallbackImage();
-            return;
-        }
-
-        // Apply color circle if createDeviceColorCircle is available
-        if (window.createDeviceColorCircle && deviceColor) {
-            const colorCircleHtml = window.createDeviceColorCircle(deviceColor);
-            $('#device-color-circle').html(colorCircleHtml);
         }
 
         const machine_desc = machineData.machine_desc;
         const machine_model = machineData.machine_model;
         let color_url = deviceColor.replaceAll(' ', '').toLowerCase();
+
+        // Apply color circle if createDeviceColorCircle is available
+        if (window.createDeviceColorCircle) {
+            const colorCircleHtml = window.createDeviceColorCircle(deviceColor);
+            $('#device-color-circle').html(colorCircleHtml);
+        }
 
         // Special case handling
         // 13" 2022 Macbook Air Starlight color doesn't work :(
@@ -172,41 +129,110 @@
             return;
         }
 
-        // Try to load the device image
-        const success = await handleDeviceImage(machine_desc, machine_model, color_url);
-        if (!success) {
+        // Reset the image loaded flag since we're attempting to load a color-specific image
+        imageLoaded = false;
+
+        // Construct paths - use encoded model only for loading images
+        const modelName = machine_desc.split(' (')[0].replaceAll(' ', '');
+        const encodedModel = machine_model.replace(',', '%2C');
+        const appleImageUrl = `https://statici.icloud.com/fmipmobile/deviceImages-9.0/${modelName}/${machine_model}-${color_url}/online-infobox__2x.png`;
+
+        // Check if caching is enabled
+        const isCachingEnabled = await checkCachingEnabled();
+        
+        // If caching is enabled, try cached image first
+        if (isCachingEnabled === true) {
+            const cachePath = `${modelName}/${machine_model}-${color_url}/online-infobox__2x.png`;
+            const cachedImageUrl = `${appUrl}/apple_img_cache/${modelName}/${encodedModel}-${color_url}/online-infobox__2x.png`;
+            
+            try {
+                await checkImageExists(cachedImageUrl);
+                $('#apple_hardware_icon').attr('src', cachedImageUrl);
+                imageLoaded = true;
+                return;
+            } catch (e) {
+                // Cache miss, continue to fetch from Apple
+            }
+            
+            // Try Apple's image
+            try {
+                await checkImageExists(appleImageUrl);
+                $('#apple_hardware_icon').attr('src', appleImageUrl);
+                imageLoaded = true;
+
+                // Save to cache in background (only when caching is enabled)
+                $.ajax({
+                    url: `${appUrl}/module/machine/save_image_to_cache`,
+                    type: 'POST',
+                    data: {
+                        image_url: appleImageUrl,
+                        cache_path: cachePath
+                    }
+                });
+                
+                return;
+            } catch (e) {
+                loadFallbackImage();
+            }
+        } else {
+            // Caching is disabled, load directly from Apple (default behavior)
+            try {
+                await checkImageExists(appleImageUrl);
+                $('#apple_hardware_icon').attr('src', appleImageUrl);
+                imageLoaded = true;
+            } catch (e) {
+                loadFallbackImage();
+            }
+        }
+    }
+
+    // Process device color when it becomes available
+    function processDeviceColor() {
+        if (!machineDataCache) return;
+        
+        // Get device color from ibridge data
+        let deviceColor = null;
+        if (window.ibridge_data && window.ibridge_data.length > 0) {
+            for (let i = 0; i < window.ibridge_data.length; i++) {
+                if (window.ibridge_data[i].device_color) {
+                    deviceColor = window.ibridge_data[i].device_color;
+                    break;
+                }
+            }
+        }
+        
+        if (deviceColor) {
+            // If we have a device color, try to load the color-specific image
+            handleDeviceImage(machineDataCache, deviceColor);
+        } else {
+            // If no device color is available, load the fallback image
             loadFallbackImage();
         }
     }
 
-    // Wait for ibridge data to be available
-    function waitForIBridgeData(machineData, maxAttempts = 10) {
-        let attempts = 0;
-        
-        function checkAndLoad() {
-            if (window.ibridge_data !== undefined) {
-                loadDeviceImage(machineData);
-                return;
-            }
+    // Initialize image loading when document is ready
+    $(document).ready(function() {
+        // Load machine data
+        $.getJSON(appUrl + '/module/machine/report/' + serialNumber, function(machineData) {
+            // Cache machine data for later use
+            machineDataCache = machineData;
             
-            attempts++;
-            if (attempts < maxAttempts) {
-                setTimeout(checkAndLoad, 200);
-            } else {
-                // Fallback if ibridge data never becomes available
-                loadFallbackImage();
+            // If ibridge data is already available, process it immediately
+            if (window.ibridge_data !== undefined) {
+                processDeviceColor();
             }
-        }
-        
-        checkAndLoad();
-    }
-
-    // Get machine data and load image
-    $.getJSON(appUrl + '/module/machine/report/' + serialNumber, function(machineData) {
-        // Wait for ibridge data to be loaded by the ibridge module
-        waitForIBridgeData(machineData);
-    }).fail(function() {
-        loadFallbackImage();
+            // Otherwise, we'll wait for the ibridge_data_ready event
+            // No need to load fallback image preemptively
+        }).fail(function() {
+            // Only load fallback image if machine data request fails
+            loadFallbackImage();
+        });
+    });
+    
+    // Listen for ibridge data ready event
+    $(document).on('ibridge_data_ready', function() {
+        // Process device color when ibridge data becomes available
+        processDeviceColor();
     });
 
     // ------------------------------------ Refresh machine description
@@ -222,7 +248,15 @@
                     $('.machine-desc-text').text(data['model']);
 
                     // Update the color circle content only if deviceColor is available
-                    const deviceColor = getDeviceColor();
+                    let deviceColor = null;
+                    if (window.ibridge_data && window.ibridge_data.length > 0) {
+                        for (let i = 0; i < window.ibridge_data.length; i++) {
+                            if (window.ibridge_data[i].device_color) {
+                                deviceColor = window.ibridge_data[i].device_color;
+                                break;
+                            }
+                        }
+                    }
                     
                     if (deviceColor && window.createDeviceColorCircle) {
                         const colorCircleHtml = window.createDeviceColorCircle(deviceColor);

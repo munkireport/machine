@@ -489,7 +489,7 @@ class Machine_controller extends Module_controller
         }
 
         $obj->view('json', array('msg' => array(
-            'image_cache' => conf('machine.image_cache', true)
+            'image_cache' => env('IMAGE_CACHE', false)
         )));
     }
 } // END class Machine_controller

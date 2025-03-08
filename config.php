@@ -6,11 +6,11 @@ return [
   | Machine Module
   |===============================================
   |
-  | By default, machine module will cache device images locally.
-  | To disable caching and load images directly from Apple,
-  | set `image_cache` to false.
+  | By default, machine module will not cache device images locally.
+  | To enable caching and save images from Apple locally,
+  | set `image_cache` to true.
   |
   */
 
-  'image_cache' => env('IMAGE_CACHE', true),
+  'image_cache' => env('IMAGE_CACHE', false),
 ]; 

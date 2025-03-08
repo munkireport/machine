@@ -17,6 +17,7 @@ IMAGE_CACHE=TRUE
 
 Table Schema
 -----
+
 * serial_number - VARCHAR(255) - Machine serial number
 * hostname - VARCHAR(255) - Machine hostname
 * machine_model - VARCHAR(255) - Machine model
@@ -37,4 +38,4 @@ Table Schema
 * l2_cache - VARCHAR(255) - L2 cache
 * l3_cache - VARCHAR(255) - L3 cache
 * machine_name - VARCHAR(255) - Machine name
-* packages - INT(11) - Number of packages 
+* packages - INT(11) - Number of packages
