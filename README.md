@@ -6,13 +6,25 @@ The Machine module provides information about the hardware of the Mac, including
 Configuration
 -------------
 
-By default the Machine module will cache device images locally. The web server should have write access to /public.
+By default the Machine module will NOT cache device images locally. To enable the cache edit .env. The web server should have write access to /public.
 Setting `IMAGE_CACHE` to `FALSE` will load images directly from Apple's servers.
 ```
 IMAGE_CACHE=TRUE
 ```
 ![image](https://github.com/user-attachments/assets/8ccd876c-fa47-4f4a-abaf-159e4f7b6c5c)
 
+
+Admin Page
+----------
+
+The Machine module includes an admin page that allows administrators to manage device image caching and other machine-related settings. The admin page can be accessed through the MunkiReport admin interface.
+
+Features available on the admin page include:
+
+* Clearing the image cache
+* Monitoring cache storage usage
+
+To access the admin page, navigate to Admin → Machine in the MunkiReport interface.
 
 
 Table Schema
