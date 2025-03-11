@@ -79,7 +79,15 @@
             }
             
             // Convert to boolean based on the value
-            if (cacheValue === true || cacheValue === "TRUE") {
+            if (cacheValue === true || 
+                cacheValue === 1 || 
+                cacheValue === "1" || 
+                cacheValue === "true" || 
+                cacheValue === "TRUE" || 
+                cacheValue === "yes" || 
+                cacheValue === "YES" || 
+                cacheValue === "on" || 
+                cacheValue === "ON") {
                 cachingEnabled = true;
             } else {
                 cachingEnabled = false;

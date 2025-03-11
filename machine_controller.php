@@ -36,6 +36,169 @@ class Machine_controller extends Module_controller
     }
 
     /**
+     * Admin page for machine module
+     *
+     * @author 
+     **/
+    public function admin()
+    {
+        $obj = new View();
+        $obj->view('machine_admin', [], $this->view_path);
+    }
+
+    /**
+     * Get cache information for the admin page
+     *
+     * @return void
+     * @author 
+     **/
+    public function get_cache_info()
+    {
+        // Check if user is authorized
+        if (!$this->authorized()) {
+            http_response_code(401);
+            die(json_encode(['success' => false, 'error' => 'Unauthorized']));
+        }
+
+        // Get cache status from config - first try env directly, then fall back to conf
+        $cache_enabled = env('IMAGE_CACHE', null);
+        
+        // Convert string values to boolean if needed
+        if ($cache_enabled === 'true' || $cache_enabled === '1') {
+            $cache_enabled = true;
+        } elseif ($cache_enabled === 'false' || $cache_enabled === '0') {
+            $cache_enabled = false;
+        }
+        
+        // If not set in env, use conf
+        if ($cache_enabled === null) {
+            $cache_enabled = conf('image_cache', false);
+        }
+
+        // Set up cache directory path
+        if (defined('PUBLIC_ROOT')) {
+            $cache_dir = PUBLIC_ROOT . '/apple_img_cache/';
+        } elseif (defined('APP_ROOT')) {
+            $cache_dir = APP_ROOT . '/public/apple_img_cache/';
+        } else {
+            $cache_dir = '';
+        }
+
+        // Initialize response
+        $response = [
+            'enabled' => $cache_enabled,
+            'file_count' => 0,
+            'cache_size' => '0 B'
+        ];
+
+        // If cache directory exists, count files and calculate size
+        if ($cache_dir && file_exists($cache_dir)) {
+            $file_count = 0;
+            $total_size = 0;
+
+            // Recursive function to count files and calculate size
+            $count_files = function($dir) use (&$file_count, &$total_size, &$count_files) {
+                $files = scandir($dir);
+                foreach ($files as $file) {
+                    if ($file == '.' || $file == '..') {
+                        continue;
+                    }
+                    
+                    $path = $dir . '/' . $file;
+                    if (is_dir($path)) {
+                        $count_files($path);
+                    } else {
+                        $file_count++;
+                        $total_size += filesize($path);
+                    }
+                }
+            };
+
+            // Count files and calculate size
+            $count_files($cache_dir);
+
+            // Format size
+            $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+            $size = $total_size;
+            $unit_index = 0;
+            
+            while ($size > 1024 && $unit_index < count($units) - 1) {
+                $size /= 1024;
+                $unit_index++;
+            }
+            
+            $formatted_size = round($size, 2) . ' ' . $units[$unit_index];
+
+            // Update response
+            $response['file_count'] = $file_count;
+            $response['cache_size'] = $formatted_size;
+        }
+
+        // Return response as JSON
+        jsonView($response);
+    }
+
+    /**
+     * Purge the apple_img_cache directory
+     *
+     * @return void
+     * @author 
+     **/
+    public function purge_cache()
+    {
+        // Check if user is authorized
+        if (!$this->authorized()) {
+            http_response_code(401);
+            die(json_encode(['success' => false, 'error' => 'Unauthorized']));
+        }
+
+        // Set up cache directory path
+        if (defined('PUBLIC_ROOT')) {
+            $cache_dir = PUBLIC_ROOT . '/apple_img_cache/';
+        } elseif (defined('APP_ROOT')) {
+            $cache_dir = APP_ROOT . '/public/apple_img_cache/';
+        } else {
+            jsonView(['success' => false, 'error' => 'Cache directory not found']);
+            return;
+        }
+
+        // Check if cache directory exists
+        if (!file_exists($cache_dir)) {
+            jsonView(['success' => true, 'message' => 'Cache directory does not exist']);
+            return;
+        }
+
+        // Recursive function to delete files and directories
+        $delete_files = function($dir) use (&$delete_files) {
+            $files = scandir($dir);
+            foreach ($files as $file) {
+                if ($file == '.' || $file == '..') {
+                    continue;
+                }
+                
+                $path = $dir . '/' . $file;
+                if (is_dir($path)) {
+                    $delete_files($path);
+                    rmdir($path);
+                } else {
+                    unlink($path);
+                }
+            }
+        };
+
+        try {
+            // Delete all files in the cache directory
+            $delete_files($cache_dir);
+            
+            // Return success
+            jsonView(['success' => true, 'message' => 'Cache purged successfully']);
+        } catch (Exception $e) {
+            // Return error
+            jsonView(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
+    /**
      * Get duplicate computernames
      *
      *
