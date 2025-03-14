@@ -18,3 +18,7 @@ widgets:
     osbuild: {view: osbuild_widget}
 reports: 
     hardware: {view: hardware, i18n: machine.hardware_report}
+admin_pages:
+    admin:
+        view: machine_admin
+        i18n: machine.admin.title

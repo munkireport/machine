@@ -25,3 +25,8 @@ table:
     i18n_header: machine.cpu_speed
   - column: machine.boot_rom_version 
     i18n_header: machine.rom_version 
+  - column: reportdata.timestamp
+    i18n_header: listing.checkin
+    formatter: timestampToMoment   
+
+    sort: desc
