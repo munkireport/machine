@@ -1,31 +1,34 @@
 Machine module
 ==============
 
-The Machine module provides information about the hardware of the Mac, including the model, serial number, and hardware details. It also handles device image caching functionality for the entire MunkiReport system.
+The Machine module provides information about the hardware of the Mac, including the model, serial number, and hardware details with links to https:www.everymac.com and <https://www.mactracker.ca>. It also handles device image caching functionality. If the ibridge module is installed, it also displays the device color and relevant device image.
+
+![Machine Module](machine_mod.png)
 
 Configuration
 -------------
 
 By default the Machine module will NOT cache device images locally. To enable the cache edit .env. The web server should have write access to /public.
-Setting `IMAGE_CACHE` to `FALSE` will load images directly from Apple's servers.
+Setting `IMAGE_CACHE` to `FALSE` will load images directly from Apple's servers. Setting it to `TRUE` will enable the local cache.
+
 ```
 IMAGE_CACHE=TRUE
 ```
-![image](https://github.com/user-attachments/assets/8ccd876c-fa47-4f4a-abaf-159e4f7b6c5c)
-
 
 Admin Page
 ----------
 
-The Machine module includes an admin page that allows administrators to manage device image caching and other machine-related settings. The admin page can be accessed through the MunkiReport admin interface.
+The Machine module includes an admin page that allows administrators to manage device image and Mactracker caching settings. The admin page can be accessed through the MunkiReport admin menu.
+
+The Mactracker cache enables direct model lookup in the Mactracker app.
 
 Features available on the admin page include:
 
-* Clearing the image cache
 * Monitoring cache storage usage
+* Clearing the image cache
+* Refreshing Mactracker data
 
 To access the admin page, navigate to Admin → Machine in the MunkiReport interface.
-
 
 Table Schema
 -----

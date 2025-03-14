@@ -10,9 +10,11 @@
             <span class="label label-info"><span class="reportdata-remote_ip"></span></span><br>
         </div>
     </div>
-    <span class="machine-machine_desc" style="position: relative;">
-      <span class="machine-desc-text"></span>
-      <span id="device-color-circle" style="position: absolute; top: 50%; right: 5px; transform: translateY(-50%);"></span>
+    <span class="machine-machine_desc">
+      <div class="machine-desc-text" style="position: relative; display: inline-block;">
+        <span class="model-text"></span>
+        <span id="device-color-circle" style="position: absolute; top: 50%; right: 4px; transform: translateY(-50%);"></span>
+      </div>
     </span>
     <a class="machine-refresh-desc" href="" style="margin-left: 4px;"><i class="fa fa-refresh"></i></a>
 </div>
@@ -112,12 +114,6 @@
         const machine_model = machineData.machine_model;
         let color_url = deviceColor.replaceAll(' ', '').toLowerCase();
 
-        // Apply color circle if createDeviceColorCircle is available
-        if (window.createDeviceColorCircle) {
-            const colorCircleHtml = window.createDeviceColorCircle(deviceColor);
-            $('#device-color-circle').html(colorCircleHtml);
-        }
-
         // Special case handling
         // 13" 2022 Macbook Air Starlight color doesn't work :(
         if (color_url === "starlight" && machine_model === "Mac14,2") {
@@ -209,6 +205,12 @@
             }
         }
         
+        // Apply color circle if available (do this regardless of image loading)
+        if (deviceColor && window.createDeviceColorCircle) {
+            const colorCircleHtml = window.createDeviceColorCircle(deviceColor);
+            $('#device-color-circle').html(colorCircleHtml);
+        }
+        
         if (deviceColor) {
             // If we have a device color, try to load the color-specific image
             handleDeviceImage(machineDataCache, deviceColor);
@@ -248,31 +250,48 @@
         .attr('href', appUrl + '/module/machine/model_lookup/' + serialNumber)
         .click(function(e) {
             e.preventDefault();
+            
+            // Add spinning animation to the refresh icon
+            const $refreshIcon = $(this).find('i.fa-refresh');
+            $refreshIcon.addClass('fa-spin');
+            
             // show that we're doing a lookup
-            $('.machine-desc-text').text(i18n.t('loading'));
+            $('.model-text').text(i18n.t('loading'));
+            
+            // Add a short delay for visual feedback
+            setTimeout(function() {
+                $.getJSON(appUrl + '/module/machine/model_lookup/' + serialNumber, function(data) {
+                    if (data['error'] == '') {
+                        $('.model-text').text(data['model']);
 
-            $.getJSON(appUrl + '/module/machine/model_lookup/' + serialNumber, function(data) {
-                if (data['error'] == '') {
-                    $('.machine-desc-text').text(data['model']);
-
-                    // Update the color circle content only if deviceColor is available
-                    let deviceColor = null;
-                    if (window.ibridge_data && window.ibridge_data.length > 0) {
-                        for (let i = 0; i < window.ibridge_data.length; i++) {
-                            if (window.ibridge_data[i].device_color) {
-                                deviceColor = window.ibridge_data[i].device_color;
-                                break;
+                        // Update the color circle content only if deviceColor is available
+                        let deviceColor = null;
+                        if (window.ibridge_data && window.ibridge_data.length > 0) {
+                            for (let i = 0; i < window.ibridge_data.length; i++) {
+                                if (window.ibridge_data[i].device_color) {
+                                    deviceColor = window.ibridge_data[i].device_color;
+                                    break;
+                                }
                             }
                         }
+                        
+                        if (deviceColor && window.createDeviceColorCircle) {
+                            const colorCircleHtml = window.createDeviceColorCircle(deviceColor);
+                            $('#device-color-circle').html(colorCircleHtml);
+                        }
+                    } else {
+                        $('.model-text').text(data['error']);
                     }
                     
-                    if (deviceColor && window.createDeviceColorCircle) {
-                        const colorCircleHtml = window.createDeviceColorCircle(deviceColor);
-                        $('#device-color-circle').html(colorCircleHtml);
-                    }
-                } else {
-                    $('.machine-desc-text').text(data['error']);
-                }
-            });
+                    // Remove spinning animation when done
+                    $refreshIcon.removeClass('fa-spin');
+                }).fail(function() {
+                    // Handle failure
+                    $('.model-text').text(i18n.t('error'));
+                    
+                    // Remove spinning animation on error too
+                    $refreshIcon.removeClass('fa-spin');
+                });
+            }, 300); // 300ms delay for visual feedback
         });
 </script>

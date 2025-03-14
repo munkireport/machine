@@ -1,0 +1,335 @@
+# 2008
+'iMac (20-inch Early 2008)':
+  MactrackerUUID: '7EAD115F-703F-47B0-8457-3BFA901DDF9D'
+'iMac (24-inch Early 2008)':
+  MactrackerUUID: '0CC31DA5-57F0-4788-A299-3D972DE70091'
+'Mac Pro (Early 2008)':
+  MactrackerUUID: '14F2B13C-29A1-4409-838A-8AAC67171BBC'
+'MacBook (13-inch, Early 2008)':
+  MactrackerUUID: '2D35FDB6-259A-488A-B3BD-0B8359797DE2'
+'MacBook (13-inch, Aluminum, Late 2008)':
+  MactrackerUUID: 'DBE35EE0-905A-4F64-8B61-99ACBF03A697'
+'MacBook (13-inch, Late 2008)':
+  MactrackerUUID: 'ECB40EC1-E8CC-4E59-BC0B-15DE15472E18'
+'MacBook Air':
+  MactrackerUUID: '8FCC9272-B698-4B51-B728-379A4A3AA90C'
+'MacBook Air (Late 2008)':
+  MactrackerUUID: '16C58E1C-07A9-4C52-B3EF-8A1048FA6FCE'
+'MacBook Pro (15-inch, Early 2008)':
+  MactrackerUUID: '9B7BA6F7-4921-4501-8BED-DD1D3540003C'
+'MacBook Pro (15-inch, Late 2008)':
+  MactrackerUUID: '7F9ABB21-55D9-47FA-A9A6-72DCF59B14B5'
+'MacBook Pro (17-inch, Early 2008)':
+  MactrackerUUID: '61642BE9-6C57-4118-A15F-C90CCC29EFD6'
+'MacBook Pro (17-inch, Late 2008)':
+  MactrackerUUID: '98099859-5E94-43B2-8619-B05FB312B382'
+
+# 2009
+'iMac (20-inch, Early 2009)':
+  MactrackerUUID: 'A832E0F5-6A5A-41EB-BD31-9330997FDA3D'
+'iMac (20-inch, Mid 2009)':
+  MactrackerUUID: '37FCA962-627E-4D55-B519-713CDD962F6D'
+'iMac (21.5-inch, Late 2009)':
+  MactrackerUUID: '46C6F6E0-ED57-4D73-B968-8DE731CD79B6'
+'iMac (24-inch, Early 2009)':
+  MactrackerUUID: '4C208154-451E-459C-9B9B-09E0A0091805'
+'iMac (27-inch, Late 2009)':
+  MactrackerUUID: '9DAF9468-D416-4745-AE10-99871EEF09D2'
+'Mac Pro (Early 2009)':
+  MactrackerUUID: '10CC7955-09E5-46A4-9D93-4075F55A57A2'
+'Mac mini (Early 2009)':
+  MactrackerUUID: '70A7DBDE-16BB-4AAB-A4CE-75B36130FEC0'
+'Mac mini (Late 2009)':
+  MactrackerUUID: 'C958E9C9-615B-4FCE-9505-94BFFB2C6E85'
+'Mac mini (Mac OS X Server, Late 2009)':
+  MactrackerUUID: '8A374F2B-4FE7-4930-BBF3-CB863A9366F4'
+'MacBook (13-inch, Early 2009)':
+  MactrackerUUID: '2BE5B30F-C501-46AE-BC8B-4ECBA042DAF9'
+'MacBook (13-inch, Late 2009)':
+  MactrackerUUID: 'D1603AF2-FD9D-4316-A040-1C9EA6A7C2DC'
+'MacBook (13-inch, Mid 2009)':
+  MactrackerUUID: '33206EE5-396E-4559-9C81-46049D078172'
+'MacBook Air (Mid 2009)':
+  MactrackerUUID: '2CE0143C-F080-4978-9CEE-3D91E2CAD959'
+'MacBook Pro (13-inch, Mid 2009)':
+  MactrackerUUID: 'B4531E92-300C-418C-92AD-8D35331E4DF6'
+'MacBook Pro (15-inch, 2.53GHz, Mid 2009)':
+  MactrackerUUID: '122610DE-2C30-452A-97E5-125BD36CB590'
+'MacBook Pro (15-inch, Mid 2009)':
+  MactrackerUUID: 'B75C32FA-8F01-4795-86A1-882BD1E92441'
+'MacBook Pro (17-inch, Early 2009)':
+  MactrackerUUID: '3D32C254-1A64-42E3-8A2F-BA617EFB34AD'
+'MacBook Pro (17-inch, Mid 2009)':
+  MactrackerUUID: 'A336A413-8EB8-41A3-AA6A-F672755A0C76'
+
+# 2010
+'iMac (21.5-inch, Mid 2010)':
+  MactrackerUUID: '8EC78F8D-16B3-4AF3-A65B-B77C662F2347'
+'iMac (27-inch, Mid 2010)':
+  MactrackerUUID: 'AD8D32A6-15C3-48FA-A521-4DF39AEB1F77'
+'Mac Pro (Mid 2010)':
+  MactrackerUUID: '5E22F5FF-144C-46CA-AE21-42D2DEB70730'
+'Mac Pro Server (Mid 2010)':
+  MactrackerUUID: '2937D7AB-F3CF-4CD0-A96F-AC9F470D0027'
+'Mac mini (Mid 2010)':
+  MactrackerUUID: '6D6339A7-250A-4AD4-B824-C8BDB8CD6A45'
+'Mac mini Server (Mid 2010)':
+  MactrackerUUID: '303904A9-2058-4721-9296-497B1AE0F02C'
+'MacBook (13-inch, Mid 2010)':
+  MactrackerUUID: '1A131EF0-4822-41B3-8973-AF1CB57C201F'
+'MacBook Air (11-inch, Late 2010)':
+  MactrackerUUID: '65D1AD3A-DDE4-40DA-9404-5C0981A10D8E'
+'MacBook Air (13-inch, Late 2010)':
+  MactrackerUUID: '1A0361DD-7864-429B-ADC9-88EA437A6738'
+'MacBook Pro (13-inch, Mid 2010)':
+  MactrackerUUID: 'D0E1537D-DE8B-4D76-8E4B-4989E50EA1DC'
+'MacBook Pro (15-inch, Mid 2010)':
+  MactrackerUUID: '390617E0-7FA4-48E4-ADBE-DAF38436FEC8'
+'MacBook Pro (17-inch, Mid 2010)':
+  MactrackerUUID: 'AFDFA30E-E846-4154-B41B-B253765C22A1'
+
+# 2011
+'iMac (21.5-inch, Late 2011)':
+  MactrackerUUID: '14617A63-3FA6-4A68-A8FF-CFEAE5D11BB3'
+'iMac (21.5-inch, Mid 2011)':
+  MactrackerUUID: '6CA4A95A-B611-42FA-8F15-B237C311CB8B'
+'iMac (27-inch, Mid 2011)':
+  MactrackerUUID: '7F67DB43-8602-4DF3-9252-C4C4E29204DF'
+'Mac mini (Mid 2011)':
+  MactrackerUUID: '2039A49A-AECF-401E-8A7C-FBFFF5866444'
+'Mac mini Server (Mid 2011)':
+  MactrackerUUID: '60CAE8BE-8409-4308-B6D9-43BD9957F2D4'
+'MacBook Air (11-inch, Mid 2011)':
+  MactrackerUUID: '98B6FE8C-4784-4541-91FE-434E45D34AE7'
+'MacBook Air (13-inch, Mid 2011)':
+  MactrackerUUID: 'B65AAD92-1CA5-44B2-9B37-A89AAE8879E9'
+'MacBook Pro (13-inch, Early 2011)':
+  MactrackerUUID: '7100F247-2CF4-4C33-BE57-948881304DA7'
+'MacBook Pro (13-inch, Late 2011)':
+  MactrackerUUID: '6C40064D-DEBE-49CB-B885-0881FE7A194A'
+'MacBook Pro (15-inch, Early 2011)':
+  MactrackerUUID: '71A125F9-A9D3-460B-904C-B1F27E577B7A'
+'MacBook Pro (15-inch, Late 2011)':
+  MactrackerUUID: '1FA81D7E-A2DC-4AAE-B3A3-A77C79E136CC'
+'MacBook Pro (17-inch, Early 2011)':
+  MactrackerUUID: '7EE3284B-2CBB-4EE1-AC56-F1A293541F22'
+'MacBook Pro (17-inch, Late 2011)':
+  MactrackerUUID: '282DF8CB-52CD-42A5-A1A3-F1C46E15ACD5'
+
+# 2012
+'iMac (21.5-inch, Late 2012)':
+  MactrackerUUID: '129C5940-79B4-4B88-A9FF-5FCAA958F005'
+'iMac (27-inch, Late 2012)':
+  MactrackerUUID: '605D6CD7-D5A9-4B1E-87E8-F904312E414A'
+'Mac Pro (Mid 2012)':
+  MactrackerUUID: '885CA679-2EDF-4C0E-9FA6-C0AD50F52543'
+'Mac Pro Server (Mid 2012)':
+  MactrackerUUID: 'DAFD8BFF-9F67-41E3-82B5-6646D9F3111F'
+'Mac mini (Late 2012)':
+  MactrackerUUID: 'D8E40DCE-5BA9-4242-B8F4-2022817D8E06'
+'Mac mini Server (Late 2012)':
+  MactrackerUUID: '86FBE241-BE93-432C-BCCF-18896103B404'
+'MacBook Air (11-inch, Mid 2012)':
+  MactrackerUUID: 'E2CC78F5-170B-4888-BCD6-2CA5290CB276'
+'MacBook Air (13-inch, Mid 2012)':
+  MactrackerUUID: '3C0BB7E1-7E52-41B4-ACA8-876CA3D6D756'
+'MacBook Pro (13-inch, Mid 2012)':
+  MactrackerUUID: 'B317F9B8-2FAF-4DE0-9831-559541CA7CDD'
+'MacBook Pro (15-inch, Mid 2012)':
+  MactrackerUUID: '86B06EE8-7AB9-4739-B322-6001A74B646B'
+'MacBook Pro (Retina, 13-inch, Late 2012)':
+  MactrackerUUID: 'C2A5EE88-003E-442A-82CF-29885A9E175B'
+'MacBook Pro (Retina, 15-inch, Mid 2012)':
+  MactrackerUUID: 'C4BBADCB-7D45-435F-9FE5-AA6127949789'
+
+# 2013
+'iMac (21.5-inch, Early 2013)':
+  MactrackerUUID: 'D54D1352-DE40-431A-97C3-1C781E544711'
+'iMac (21.5-inch, Late 2013)':
+  MactrackerUUID: 'D5DFE19B-A971-4493-8DD1-19C8CBC06731'
+'iMac (27-inch, Late 2013)':
+  MactrackerUUID: '7CB92647-B4B7-4002-BA97-E86A1CF43C4E'
+'Mac Pro (Late 2013)':
+  MactrackerUUID: 'C7EC0878-D726-463B-8B8E-5C9BCF981D73'
+'MacBook Air (11-inch, Mid 2013)':
+  MactrackerUUID: '0B53541C-CBF9-4EFD-8F2C-BE9AFD72446C'
+'MacBook Air (13-inch, Mid 2013)':
+  MactrackerUUID: '3A35574B-BE79-42D8-828E-1A612DB4942F'
+'MacBook Pro (Retina, 13-inch, Early 2013)':
+  MactrackerUUID: '540BCECA-C2DA-46A8-9B39-6F9FD1BAC05D'
+'MacBook Pro (Retina, 13-inch, Late 2013)':
+  MactrackerUUID: 'D572E0CF-20C9-49B6-AECB-129E10124EB9'
+'MacBook Pro (Retina, 15-inch, Early 2013)':
+  MactrackerUUID: '59FC97D5-7793-42D4-A1A0-18887D44D3D8'
+'MacBook Pro (Retina, 15-inch, Late 2013)':
+  MactrackerUUID: '371D7056-17D1-4E6D-86CC-A36D72149A79'
+
+# 2014
+'iMac (21.5-inch, Mid 2014)':
+  MactrackerUUID: '9719B486-99E5-48DB-A145-39AADE1CBAAB'
+'iMac (Retina 5K, 27-inch, Late 2014)':
+  MactrackerUUID: '0E3C5C43-1A48-4CD2-B62D-BC3537813D13'
+'Mac mini (Late 2014)':
+  MactrackerUUID: '3D0CD87E-6DDD-4345-A0B0-50F9242FEC3A'
+'MacBook Air (11-inch, Early 2014)':
+  MactrackerUUID: '5AD61314-49E7-4F8F-AD60-337BA76D589F'
+'MacBook Air (13-inch, Early 2014)':
+  MactrackerUUID: 'E9EF94EC-7B65-4969-AA81-E837F47A39BB'
+'MacBook Pro (Retina, 13-inch, Mid 2014)':
+  MactrackerUUID: '3193CC62-B2A7-4BF1-A044-610D8EF7595C'
+'MacBook Pro (Retina, 15-inch, Mid 2014)':
+  MactrackerUUID: '8F13DAF1-E9A6-40F9-918A-6C57FDDE484E'
+
+# 2015
+'iMac (21.5-inch, Late 2015)':
+  MactrackerUUID: '28FE02B0-EBE7-472B-94A6-CAE5C4860699'
+'iMac (Retina 4K, 21.5-inch, Late 2015)':
+  MactrackerUUID: '75B264D8-7C58-435C-8F15-7827A0210159'
+'iMac (Retina 5K, 27-inch, Late 2015)':
+  MactrackerUUID: 'CDE20E4F-139B-4C26-9D7B-88E72AF2F8EC'
+'iMac (Retina 5K, 27-inch, Mid 2015)':
+  MactrackerUUID: 'B5930E70-05C8-4A2C-8980-2019EFAB2ACD'
+'MacBook (Retina, 12-inch, Early 2015)':
+  MactrackerUUID: 'E6264BBA-8AB0-4FE7-9D86-7E636D64D521'
+'MacBook Air (11-inch, Early 2015)':
+  MactrackerUUID: 'DB609060-D2C8-401A-9151-089BFB77CF32'
+'MacBook Air (13-inch, Early 2015)':
+  MactrackerUUID: '9C421DD6-C3C7-4DC3-B5DB-9EC445D5F5FB'
+'MacBook Pro (Retina, 13-inch, Early 2015)':
+  MactrackerUUID: '527BB0E6-E728-4B27-93EE-9E23F792C908'
+'MacBook Pro (Retina, 15-inch, Mid 2015)':
+  MactrackerUUID: 'FD04AF70-0032-4062-8694-970EB9FF7634'
+
+# 2016
+'MacBook (Retina, 12-inch, Early 2016)':
+  MactrackerUUID: 'A16FDDD4-1468-43DB-A318-318F7D80DECB'
+'MacBook Pro (13-inch, 2016, Four Thunderbolt 3 Ports)':
+  MactrackerUUID: 'A184F0A9-29E5-44E1-A745-6694D29835A4'
+'MacBook Pro (13-inch, 2016, Two Thunderbolt 3 Ports)':
+  MactrackerUUID: 'FF7E6B81-4AF1-4B62-A17F-5E56F4E2EEF5'
+'MacBook Pro (15-inch, 2016)':
+  MactrackerUUID: '89352631-F079-4A68-9BD8-8933360EC417'
+
+# 2017
+'iMac (21.5-inch, 2017)':
+  MactrackerUUID: '310582D0-C1F8-45A7-B149-95260F629D76'
+'iMac (Retina 4K, 21.5-inch, 2017)':
+  MactrackerUUID: 'E2E0EE3A-53DB-438F-B04F-AAD046E77AAC'
+'iMac (Retina 5K, 27-inch, 2017)':
+  MactrackerUUID: '6972724A-D27E-4F96-979E-BC64757ACDC7'
+'iMac Pro (2017)':
+  MactrackerUUID: '5392ECC3-017D-4609-8904-936A7AF56513'
+'MacBook (Retina, 12-inch, 2017)':
+  MactrackerUUID: '7D805E52-DCD6-4423-B985-149AA6D69F87'
+'MacBook Air (13-inch, 2017)':
+  MactrackerUUID: '3A181FC3-A4A5-416C-909C-F6CAB515894F'
+'MacBook Pro (13-inch, 2017, Four Thunderbolt 3 Ports)':
+  MactrackerUUID: '1E80ED88-F823-429B-A3FB-9B673C720E58'
+'MacBook Pro (13-inch, 2017, Two Thunderbolt 3 Ports)':
+  MactrackerUUID: 'E7E7AE49-BB82-48E6-990E-56261E923DF7'
+'MacBook Pro (15-inch, 2017)':
+  MactrackerUUID: '8B76B5BC-5AC2-4125-914A-1467CFF916A0'
+
+# 2018
+'Mac mini (2018)':
+  MactrackerUUID: '829CC4AA-70A3-4800-B46F-A67BF2A4395E'
+'MacBook Air (Retina, 13-inch, 2018)':
+  MactrackerUUID: 'C179973C-F379-4E39-95B3-08ECEAA82A10'
+'MacBook Pro (13-inch, 2018, Four Thunderbolt 3 Ports)':
+  MactrackerUUID: 'EB72B355-E76D-4028-BB50-B5BE4001AA65'
+'MacBook Pro (15-inch, 2018)':
+  MactrackerUUID: '21E835E5-F8C0-4035-BF1C-49DAAB5CA9EE'
+
+# 2019
+'iMac (Retina 4K, 21.5-inch, 2019)':
+  MactrackerUUID: '5233D6CC-E60B-4092-BEE4-52FF6E2D14CC'
+'iMac (Retina 5K, 27-inch, 2019)':
+  MactrackerUUID: 'F71CC164-5067-4144-9C79-968E4F90BE67'
+'Mac Pro (2019)':
+  MactrackerUUID: '767D6AA5-D095-47DD-8E04-6D5A6245AB60'
+'MacBook Air (Retina, 13-inch, 2019)':
+  MactrackerUUID: '084D361D-3207-46D1-BBCA-3C22AA0C422A'
+'MacBook Pro (13-inch, 2019, Four Thunderbolt 3 ports)':
+  MactrackerUUID: 'AF7F342F-D6DF-473B-83EA-4371A59835F4'
+'MacBook Pro (13-inch, 2019, Two Thunderbolt 3 ports)':
+  MactrackerUUID: '2DF1A413-B0EC-49E5-B36F-B9A4D297236C'
+'MacBook Pro (15-inch, 2019)':
+  MactrackerUUID: '91CFBF11-A663-4E8B-B936-9396D9B62F32'
+'MacBook Pro (16-inch, 2019)':
+  MactrackerUUID: '32CB31DF-93EB-4FD9-8637-F0507E2B957A'
+
+# 2020
+'iMac (Retina 5K, 27-inch, 2020)':
+  MactrackerUUID: 'FDA3C9D7-EB53-4183-9A8E-4FD2D4159B9A'
+'Mac mini (M1, 2020)':
+  MactrackerUUID: '26BF3EAB-12A6-4C21-9334-DC0E3F575C82'
+'MacBook Air (M1, 2020)':
+  MactrackerUUID: 'FF16B676-DB80-4AC0-BC1D-352526EBA5EF'
+'MacBook Air (Retina, 13-inch, 2020)':
+  MactrackerUUID: '6841935F-2EF2-4731-8A04-32112300D9E7'
+'MacBook Pro (13-inch, 2020, Four Thunderbolt 3 ports)':
+  MactrackerUUID: 'FDE48BE6-7800-47E4-BF6C-BB0002FB0E13'
+'MacBook Pro (13-inch, 2020, Two Thunderbolt 3 ports)':
+  MactrackerUUID: '3F358D0A-A8F7-4298-AD55-AF2B91DB6576'
+'MacBook Pro (13-inch, M1, 2020)':
+  MactrackerUUID: 'D896CD1E-9E41-46DB-8B60-71BAC38B57A7'
+
+# 2021
+'iMac (24-inch, M1, 2021)':
+  MactrackerUUID: '1115A04A-66F7-4A1C-BD40-10959123A83C'
+'MacBook Pro (14-inch, 2021)':
+  MactrackerUUID: '0514B2BD-7FA1-439C-B640-5AF8B1AA7C37'
+'MacBook Pro (16-inch, 2021)':
+  MactrackerUUID: '66B5F7F5-95F5-4B1D-91DD-5EC2B086E098'
+
+# 2022
+'Mac Studio (2022)':
+  MactrackerUUID: 'F8AAAFF7-4BE5-4F8F-8F47-607EA673BF1F'
+'MacBook Air (M2, 2022)':
+  MactrackerUUID: '9CC1A038-5140-43D2-AE63-5CEFF950F37C'
+'MacBook Pro (13-inch, M2, 2022)':
+  MactrackerUUID: '03CC7E0A-74EA-42AD-8105-12EA1F2611AF'
+
+# 2023
+'iMac (24-inch, 2023)':
+  MactrackerUUID: 'D5BE433D-0407-4F06-931E-9AD2B996A340'
+'iMac (24-inch, M3, 2023, Two ports)':
+  MactrackerUUID: 'D5BE433D-0407-4F06-931E-9AD2B996A340'
+'Mac Pro (2023)':
+  MactrackerUUID: '724C35B5-8992-41A0-B4FC-58089F3686BE'
+'Mac Studio (2023)':
+  MactrackerUUID: '2CE78A54-76DA-4A62-B5FA-15D23112A3B7'
+'Mac mini (2023)':
+  MactrackerUUID: 'D92F70DD-E18F-425E-BC80-925EB0D0BE99'
+'Mac mini (2023) with M2 Pro':
+  MactrackerUUID: 'D92F70DD-E18F-425E-BC80-925EB0D0BE99'
+'MacBook Air (15-inch, M2, 2023)':
+  MactrackerUUID: 'B8A0168C-39AC-42D5-A5CF-8398A68FC5AA'
+'MacBook Pro (14-inch, 2023)':
+  MactrackerUUID: '13207274-D544-48CC-BC04-A015524ED193'
+'MacBook Pro (14-inch, M3 Pro or M3 Max, Nov 2023)':
+  MactrackerUUID: '3C7B0121-AF92-489B-BD1A-DB9F55E732EB'
+'MacBook Pro (14-inch, M3, Nov 2023)':
+  MactrackerUUID: 'AC0A22E3-CC4A-4A87-94D1-AD99DD8F8361'
+'MacBook Pro (16-inch, 2023)':
+  MactrackerUUID: 'D43ECDCC-EC5C-4DA3-BAA3-CFA9C87034A4'
+'MacBook Pro (16-inch, Nov 2023)':
+  MactrackerUUID: '4018A42C-5CC5-4A90-94D2-034B33535CDF'
+
+# 2024
+'iMac (24-inch, 2024)':
+  MactrackerUUID: '2D65CD07-B24E-41C7-B256-CCE88D8711DC'
+'iMac (24-inch, 2024, Four ports)':
+  MactrackerUUID: '2D65CD07-B24E-41C7-B256-CCE88D8711DC'
+'Mac mini (2024)':
+  MactrackerUUID: '594E0764-A149-4B6E-A120-16457892FB42'
+'MacBook Air (13-inch, M3, 2024)':
+  MactrackerUUID: '94BF025D-ED33-43D6-9BDD-25DB453A1678'
+'MacBook Air (15-inch, M3, 2024)':
+  MactrackerUUID: 'A083242E-1C22-43CB-9F06-D508F2B2C875'
+'MacBook Pro (14-inch, M4 Pro or M4 Max, 2024)':
+  MactrackerUUID: 'C7B7B45D-9CA6-49FA-8736-7E6F4BFDA882'
+'MacBook Pro (14-inch, M4, 2024)':
+  MactrackerUUID: 'D68AA59D-A7D4-4DAC-B931-27C044443351'
+'MacBook Pro (16-inch, 2024)':
+  MactrackerUUID: '5D880A53-2050-49C1-A3B6-B9CEF8E9E7CD' 

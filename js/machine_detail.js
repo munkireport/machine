@@ -23,38 +23,25 @@ $(document).on('appReady appUpdate', function(e, lang) {
 
         // Cache Mactracker data to avoid repeated fetches
         if (!window.mactracker_data) {
-            // Try local file first, then fall back to GitHub if that fails
-            fetch('/data/mactracker.txt')
-                .then(response => {
-                    if (!response.ok) {
-                        // If local file not available, throw error to trigger fallback
-                        throw new Error('Local file not available');
+            // Get data from server
+            $.getJSON(appUrl + '/module/machine/get_mactracker_data', function(response) {
+                if (response.error) {
+                    console.error('Error loading Mactracker data:', response.error);
+                    return;
+                }
+
+                // Create lookup map for faster access
+                window.mactracker_data = {};
+                // Process the YAML data
+                for (const [modelName, data] of Object.entries(response.data)) {
+                    if (data && data.MactrackerUUID) {
+                        window.mactracker_data[modelName.trim()] = data.MactrackerUUID.trim();
                     }
-                    return response.text();
-                })
-                .catch(error => {
-                    console.log('Falling back to GitHub source for Mactracker data');
-                    // Fallback to GitHub source
-                    return fetch('https://raw.githubusercontent.com/ofirgalcon/munkireport-mactracker-data/refs/heads/main/mactracker.txt')
-                        .then(response => {
-                            if (!response.ok) throw new Error('GitHub source also unavailable');
-                            return response.text();
-                        });
-                })
-                .then(data => {
-                    // Create lookup map for faster access
-                    window.mactracker_data = data.split('\n').reduce((acc, line) => {
-                        const columns = line.split('\t');
-                        if (columns.length >= 4) {
-                            acc[columns[0].trim()] = columns[3].trim();
-                        }
-                        return acc;
-                    }, {});
-                    updateMactrackerLink(mdesc);
-                })
-                .catch(error => {
-                    console.error('Error loading Mactracker data from all sources:', error);
-                });
+                }
+                updateMactrackerLink(mdesc);
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.error('Error loading Mactracker data:', errorThrown);
+            });
         } else {
             updateMactrackerLink(mdesc);
         }
@@ -90,16 +77,29 @@ function updateMactrackerLink(mdesc) {
     const uuid = window.mactracker_data[mdesc];
     if (uuid) {
         // Store the original machine description text
-        var originalText = $('.machine-machine_desc').text();
+        var originalText = $('.machine-machine_desc .machine-desc-text').text();
+        var colorCircle = $('#device-color-circle').html();
         
         $('.machine-machine_desc').html(
-            $('<a>', {
-                target: '_self',
-                href: 'mactracker://' + uuid,
-                title: 'Open this model in Mactracker',
-                class: 'btn btn-default',
-                text: originalText || mdesc
-            })
+            $('<div>', { 
+                class: 'machine-desc-text',
+                style: 'position: relative; display: inline-block;'
+            }).append(
+                $('<a>', {
+                    target: '_self',
+                    href: 'mactracker://' + uuid,
+                    title: 'Open this model in Mactracker',
+                    class: 'btn btn-default',
+                    style: 'padding-right: 25px;',
+                    text: originalText || mdesc
+                })
+            ).append(
+                $('<span>', {
+                    id: 'device-color-circle',
+                    style: 'position: absolute; top: 50%; right: 5px; transform: translateY(-50%);',
+                    html: colorCircle
+                })
+            )
         );
     }
 }

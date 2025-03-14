@@ -1,6 +1,7 @@
 <?php
 
 use Exception;
+use munkireport\lib\Request;
 
 /**
  * Machine module class
@@ -654,5 +655,186 @@ class Machine_controller extends Module_controller
         $obj->view('json', array('msg' => array(
             'image_cache' => env('IMAGE_CACHE', false)
         )));
+    }
+
+    public function get_mactracker_data()
+    {
+        // Check if we have cached YAML
+        $cached_data_time = munkireport\models\Cache::select('value')
+                        ->where('module', 'mactracker')
+                        ->where('property', 'last_update')
+                        ->value('value');
+
+        // Get the current time
+        $current_time = time();
+
+        // Check if we have a null result or a week has passed
+        if($cached_data_time == null || ($current_time > ($cached_data_time + 604800))){
+
+            // Get YAML from GitHub repo
+            $web_request = new Request();
+            $options = ['http_errors' => false];
+            $yaml_result = (string) $web_request->get('https://raw.githubusercontent.com/ofirgalcon/munkireport-mactracker-data/refs/heads/main/mactracker.yml', $options);
+
+            // Pattern match debugging
+            $pattern = '/^\s*[\'"]?[^:]+[\'"]?:\s*\n\s+MactrackerUUID:/m';
+            $matches = preg_match($pattern, $yaml_result);
+
+            // Check if we got valid YAML with Mactracker data
+            if (empty($yaml_result) || !$matches) {
+                $yaml_result = file_get_contents(__DIR__ . '/mactracker.yml');
+                $cache_source = 2;
+            } else {
+                $cache_source = 1;
+            }
+
+            // Save new cache data to the cache table
+            munkireport\models\Cache::updateOrCreate(
+                [
+                    'module' => 'mactracker', 
+                    'property' => 'yaml',
+                ],[
+                    'value' => $yaml_result,
+                    'timestamp' => $current_time,
+                ]
+            );
+            munkireport\models\Cache::updateOrCreate(
+                [
+                    'module' => 'mactracker', 
+                    'property' => 'source',
+                ],[
+                    'value' => $cache_source,
+                    'timestamp' => $current_time,
+                ]
+            );
+            munkireport\models\Cache::updateOrCreate(
+                [
+                    'module' => 'mactracker', 
+                    'property' => 'last_update',
+                ],[
+                    'value' => $current_time,
+                    'timestamp' => $current_time,
+                ]
+            );
+        } else {
+            // Retrieve cached YAML from database
+            $yaml_result = munkireport\models\Cache::select('value')
+                            ->where('module', 'mactracker')
+                            ->where('property', 'yaml')
+                            ->value('value');
+        }
+
+        // Parse and return the YAML data
+        $out = array(
+            'error' => '',
+            'data' => Symfony\Component\Yaml\Yaml::parse($yaml_result)
+        );
+        jsonView($out);
+    }
+
+    public function get_mactracker_info()
+    {
+        if (!$this->authorized()) {
+            http_response_code(401);
+            die(json_encode(['success' => false, 'error' => 'Unauthorized']));
+        }
+
+        // Get cache info from database
+        $last_update = munkireport\models\Cache::select('value')
+            ->where('module', 'mactracker')
+            ->where('property', 'last_update')
+            ->value('value');
+
+        $source = munkireport\models\Cache::select('value')
+            ->where('module', 'mactracker')
+            ->where('property', 'source')
+            ->value('value');
+
+        // Get YAML data to count models
+        $yaml_data = munkireport\models\Cache::select('value')
+            ->where('module', 'mactracker')
+            ->where('property', 'yaml')
+            ->value('value');
+
+        $model_count = 0;
+        if ($yaml_data) {
+            $data = Symfony\Component\Yaml\Yaml::parse($yaml_data);
+            $model_count = count($data);
+        }
+
+        jsonView([
+            'success' => true,
+            'last_update' => $last_update,
+            'source' => $source,
+            'model_count' => $model_count
+        ]);
+    }
+
+    public function refresh_mactracker()
+    {
+        if (!$this->authorized()) {
+            http_response_code(401);
+            die(json_encode(['success' => false, 'error' => 'Unauthorized']));
+        }
+
+        try {
+            // Get YAML from GitHub repo
+            $web_request = new Request();
+            $options = ['http_errors' => false];
+            $yaml_result = (string) $web_request->get('https://raw.githubusercontent.com/ofirgalcon/munkireport-mactracker-data/refs/heads/main/mactracker.yml', $options);
+
+            // Pattern match debugging
+            $pattern = '/^\s*[\'"]?[^:]+[\'"]?:\s*\n\s+MactrackerUUID:/m';
+            $matches = preg_match($pattern, $yaml_result);
+
+            // Check if we got valid YAML with Mactracker data
+            if (empty($yaml_result) || !$matches) {
+                $yaml_result = file_get_contents(__DIR__ . '/mactracker.yml');
+                $cache_source = 2;
+            } else {
+                $cache_source = 1;
+            }
+
+            $current_time = time();
+
+            // Save new cache data to the cache table
+            munkireport\models\Cache::updateOrCreate(
+                [
+                    'module' => 'mactracker',
+                    'property' => 'yaml',
+                ],[
+                    'value' => $yaml_result,
+                    'timestamp' => $current_time,
+                ]
+            );
+            munkireport\models\Cache::updateOrCreate(
+                [
+                    'module' => 'mactracker',
+                    'property' => 'source',
+                ],[
+                    'value' => $cache_source,
+                    'timestamp' => $current_time,
+                ]
+            );
+            munkireport\models\Cache::updateOrCreate(
+                [
+                    'module' => 'mactracker',
+                    'property' => 'last_update',
+                ],[
+                    'value' => $current_time,
+                    'timestamp' => $current_time,
+                ]
+            );
+
+            jsonView([
+                'success' => true,
+                'message' => 'Cache refreshed successfully'
+            ]);
+        } catch (Exception $e) {
+            jsonView([
+                'success' => false,
+                'error' => $e->getMessage()
+            ]);
+        }
     }
 } // END class Machine_controller
