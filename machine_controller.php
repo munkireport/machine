@@ -1,5 +1,7 @@
 <?php
 
+use munkireport\lib\Request;
+
 /**
  * Machine module class
  *
@@ -12,9 +14,9 @@ class Machine_controller extends Module_controller
     /*** Protect methods with auth! ****/
     public function __construct()
     {
-        if (! $this->authorized()) {
-            die('Authenticate first.'); // Todo: return json?
-        }
+        // if (! $this->authorized()) {
+        //     die('Authenticate first.'); // Todo: return json?
+        // }
 
         // Store module path
         $this->module_path = dirname(__FILE__) .'/';
@@ -28,7 +30,7 @@ class Machine_controller extends Module_controller
      **/
     public function index()
     {
-        echo "You've loaded the hardware module!";
+        echo "You've loaded the machine module!";
     }
 
     /**
@@ -293,44 +295,84 @@ class Machine_controller extends Module_controller
      **/
     public function model_lookup($serial_number)
     {
-        require_once(__DIR__ . '/helpers/model_lookup_helper.php');
         $out = ['error' => '', 'model' => ''];
         try {
             $machine = Machine_model::select()
                 ->where('serial_number', $serial_number)
                 ->firstOrFail();
-            $machine->machine_desc = machine_model_lookup($serial_number);
-            $machine->save();
-            $out['model'] = $machine->machine_desc;
+
+             // VMs have mixed case serials sometime
+            if (strtoupper($serial_number) != $serial_number) {
+                $machine->machine_desc = "Virtual Machine";
+                $machine->save();
+                $out['model'] = $machine->machine_desc;
+
+            } else {
+                // This method only works for non-randomized serial numbers (mid-2021 and older)
+                $client = new Request();
+                $options = ['http_errors' => false];
+                $result = (string) $client->get("https://support-sp.apple.com/sp/product?cc=".substr($serial_number, -4), $options);
+
+                if ( ! $result || strpos($result, '<configCode>') === false ){
+                    if ($machine['cpu_arch'] == "arm64"){
+                        $out['error'] = 'Unable to lookup Apple Silicon Macs';
+                    } else {
+                        $out['error'] = 'lookup_failed1';
+                    }
+                } else {
+                    // Turn the result into an object and save in the database
+                    $machine->machine_desc = json_decode(json_encode(simplexml_load_string($result)),1)["configCode"];
+                    $machine->save();
+                    $out['model'] = $machine->machine_desc;
+                }
+            }
+
         } catch (\Throwable $th) {
             // Record does not exist
-            $out['error'] = 'lookup_failed';
+            $out['error'] = 'lookup_failed2';
         }
         $obj = new View();
         $obj->view('json', [
             'msg' => $out
         ]);
-
     }
 
     /**
-     * Run machine lookup at Apple
+     * Run machine icon lookup at Apple
      *
      **/
     public function get_model_icon($serial_number)
     {
-        require_once(__DIR__ . '/helpers/model_lookup_helper.php');
         $out = ['error' => '', 'url' => ''];
         try {
             $machine = Machine_model::select()
                 ->where('serial_number', $serial_number)
                 ->firstOrFail();
-            $machine->img_url = machine_icon_lookup($serial_number);
+
+            // Most of the work for this fix was done by @precursorca
+            // modified for PHP and added here
+
+            // Remove spaces
+            $machine_name = str_replace(" ", "", $machine['machine_name']); 
+
+            // The iMac Pro looks the same as an iMac
+            if($machine['machine_model'] == "iMacPro1,1")
+            {
+                $machine_name = "iMac";
+            }
+
+            // VMs have mixed case serials sometime, so default to the basic Apple logo image
+            if (strtoupper($serial_number) != $serial_number) {    
+                $machine->img_url = ("https://km.support.apple.com/kb/securedImage.jsp?productid=".$serial_number."&size=240x240");
+            } else {
+                $machine->img_url = ("https://statici.icloud.com/fmipmobile/deviceImages-9.0/".urlencode($machine_name)."/".urlencode($machine['machine_model'])."/online-infobox__2x.png");
+            }
+
             $machine->save();
             $out['url'] = $machine->img_url;
         } catch (\Throwable $th) {
             // Record does not exist
-            $out['error'] = 'lookup_failed';
+            $out['error'] = 'lookup_failed3';
         }
         $obj = new View();
         $obj->view('json', [

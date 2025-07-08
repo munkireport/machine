@@ -1,0 +1,38 @@
+<?php
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Capsule\Manager as Capsule;
+
+class MachineNoserialClean extends Migration
+{
+    private $tableName = 'machine';
+
+    public function up()
+    {
+        $capsule = new Capsule();
+
+        $tables = $capsule::select('SHOW TABLES');
+
+        // Loop through all the tables
+        foreach ($tables as $table) {
+
+            // Process each table
+            foreach ($table as $key => $value) {
+
+                // Get all columns in table
+                $columns =  $capsule::connection()->getSchemaBuilder()->getColumnListing($value);
+
+                // If serial_number columns exists
+                if (in_array('serial_number', $columns)){
+                    // Remove the NOSERIAL rows
+                    $capsule::unprepared("DELETE FROM ".$value." WHERE `serial_number` = 'NOSERIAL'");
+                }
+            }
+        }
+    }
+
+    public function down()
+    {
+        // No going back
+    }
+}

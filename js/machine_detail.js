@@ -16,7 +16,7 @@ $(document).on('appReady ', function(e, lang) {
             );
 
         // Set computer name value and title
-		$('.mr-computer_name_input')
+        $('.mr-computer_name_input')
             .val(data.computer_name)
             .attr('title', data.computer_name)
             .data('placement', 'bottom')
@@ -29,8 +29,24 @@ $(document).on('appReady ', function(e, lang) {
         if(data.uptime > 0){
             var uptime = moment((data.timestamp - data.uptime) * 1000);
             $('.machine-uptime').html('<time title="'+i18n.t('boot_time')+': '+uptime.format('LLLL')+'">'+uptime.fromNow(true)+'</time>');
-        }else{
+        } else {
             $('.machine-uptime').text(i18n.t('unavailable'));
+        }
+
+        // Get Mac icon, use the database one first and if that fails determine the current icon
+        if (data.img_url){
+            $('#apple_hardware_icon')
+              .attr('src', data.img_url)
+        } else {
+            $.getJSON(appUrl + '/module/machine/get_model_icon/' + serialNumber, function(data) {
+                $('#apple_hardware_icon')
+                  .attr('src', data['url'])
+            });
+        }
+
+        // Hide the refresh arrow if Apple Silicon Mac
+        if (data.cpu_arch == "arm64"){
+            $('.machine-refresh-desc').addClass('hidden');
         }
     });
 });
@@ -43,7 +59,7 @@ $(document).on('appReady appUpdate', function(e, lang) {
         $.each(data, function(prop, val){
             $('.reportdata-'+prop).text(val);
         });
-        
+
         // Registration date
         var msecs = moment(data.reg_timestamp * 1000);
         $('.reportdata-reg_date').html('<time title="'+msecs.format('LLLL')+'" >'+msecs.fromNow()+'</time>');
@@ -67,6 +83,5 @@ $(document).on('appReady appUpdate', function(e, lang) {
         $('.reportdata-archive_status').text(
             i18n.t('machine.status.' + machineStatus[$('.reportdata-archive_status').text()])
         );
-
     });
 });

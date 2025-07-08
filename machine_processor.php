@@ -2,6 +2,8 @@
 
 use CFPropertyList\CFPropertyList;
 use munkireport\processors\Processor;
+use munkireport\lib\Request;
+
 
 class Machine_processor extends Processor
 {
@@ -59,11 +61,13 @@ class Machine_processor extends Processor
             $machine = new Machine_model();
         }
 
-        // Check if we need to retrieve model from Apple
-        if ($this->should_run_model_description_lookup($machine)){
-            require_once(__DIR__ . '/helpers/model_lookup_helper.php');
-            $mylist['machine_desc'] = machine_model_lookup($this->serial_number);
-        } 
+        // Check if we need to retrieve model from Apple, but only for Intel Macs
+        if ($this->should_run_model_description_lookup($machine) && $mylist['cpu_arch'] !== "arm64"){
+            $mylist['machine_desc'] = $this->model_lookup($this->serial_number);
+        } else if ($this->should_run_model_description_lookup($machine) && $mylist['cpu_arch'] == "arm64"){
+            // Otherwise return a generic model ID for Apple Silicon Macs to make sure the device icon doesn't break
+            $mylist['machine_desc'] = $mylist['machine_name'];
+        }
 
         $machine->fill($mylist)->save();
     }
@@ -74,5 +78,38 @@ class Machine_processor extends Processor
             ! $machine['machine_desc'] or 
             in_array($machine['machine_desc'], ['model_lookup_failed', 'unknown_model'])
         );
+    }
+
+    /**
+     * Run machine lookup at Apple
+     *
+     **/
+    public function model_lookup($serial_number)
+    {
+        $out = ['error' => '', 'model' => ''];
+        try {
+             // VMs have mixed case serials sometime
+            if (strtoupper($serial_number) != $serial_number) {
+                return "Virtual Machine";
+
+            } else {
+                // This method only works for non-randomized serial numbers (mid-2021 and older)
+                $client = new Request();
+                $options = ['http_errors' => false];
+                $result = (string) $client->get("https://support-sp.apple.com/sp/product?cc=".substr($serial_number, -4), $options);
+
+                if ( ! $result || strpos($result, '<configCode>') === false ){
+                    return null;
+
+                } else {
+                    // Turn the result into an object and save in the database
+                    return json_decode(json_encode(simplexml_load_string($result)),1)["configCode"];
+                }
+            }
+
+        } catch (\Throwable $th) {
+            print_r("Error looking up machine description from Apple.");
+            return null;
+        }
     }
 }

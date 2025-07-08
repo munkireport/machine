@@ -14,11 +14,6 @@
 </div>
 
 <script>
-
-    $.getJSON(appUrl + '/module/machine/get_model_icon/' + serialNumber, function(data) {
-        $('#apple_hardware_icon')
-          .attr('src', data['url'])
-    });
     // ------------------------------------ Refresh machine description
         $('.machine-refresh-desc')
         .attr('href', appUrl + '/module/machine/model_lookup/' + serialNumber)
