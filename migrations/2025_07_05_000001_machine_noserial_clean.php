@@ -24,8 +24,13 @@ class MachineNoserialClean extends Migration
 
                 // If serial_number columns exists
                 if (in_array('serial_number', $columns)){
-                    // Remove the NOSERIAL rows
-                    $capsule::unprepared("DELETE FROM ".$value." WHERE `serial_number` = 'NOSERIAL'");
+                    try {
+                        // Remove the NOSERIAL rows
+                        $capsule::unprepared("DELETE FROM ".$value." WHERE `serial_number` = 'NOSERIAL'");
+                    } catch (Exception $e) {
+                        // Print warning on what failed
+                        print_r("<br> Failed to remove NOSERIAL from ".$value);
+                    }
                 }
             }
         }
