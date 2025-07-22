@@ -11,7 +11,13 @@ class MachineNoserialClean extends Migration
     {
         $capsule = new Capsule();
 
-        $tables = $capsule::select('SHOW TABLES');
+        // Try getting the table names for MySQL
+        try {
+            $tables = $capsule::select('SHOW TABLES');
+        } catch (Exception $e) {
+            // If it fails, get them for SQLite
+            $tables = $capsule::select("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;");
+        }
 
         // Loop through all the tables
         foreach ($tables as $table) {
