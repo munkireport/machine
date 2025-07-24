@@ -201,9 +201,12 @@ def get_hardware_info():
         sp_hardware_dict = items[0]
 
         # Set the machine description
-        machine_desc = re.sub(r'[^"a-zA-Z0-9 (),-]', '', get_description())
+        machine_desc = get_description()
         if machine_desc:
-            sp_hardware_dict["machine_desc"] = re.sub(r'[^"a-zA-Z0-9 (),-]', '', get_description())
+            sp_hardware_dict["machine_desc"] = re.sub(r'[^"a-zA-Z0-9 (),-]', '', machine_desc)
+
+        # Add CPU architecture
+        sp_hardware_dict["cpu_arch"] = ''.join(re.findall(r'RELEASE_([iA-Z1-9]+)(_\d+)?', os.uname()[3])[0]).lower()
 
         return sp_hardware_dict
     except BaseException:
@@ -292,6 +295,33 @@ def get_uptime():
     sec = int(re.sub(r".*sec = (\d+),.*", "\\1", output.decode("utf-8", errors="ignore")))
     up = int(time.time() - sec)
     return up if up > 0 else -1
+
+
+def get_description():
+    """Gets the Mac model description."""
+    cpu_arch = os.uname()[3].lower()
+
+    try:
+        # Do things for Intel Mac
+        if 'x86_64' in cpu_arch or 'i386' in cpu_arch:
+
+            if os.path.isfile('/System/Library/PrivateFrameworks/ServerInformation.framework/Resources/en.lproj/SIMachineAttributes.plist'):
+
+                cmd = ['/usr/sbin/sysctl', '-n', 'hw.model']
+                output = subprocess.check_output(cmd)
+                output = output.decode("utf-8", errors="ignore")
+                machine_descs = FoundationPlist.readPlist('/System/Library/PrivateFrameworks/ServerInformation.framework/Resources/en.lproj/SIMachineAttributes.plist')
+
+                if output in machine_descs and "_LOCALIZABLE_" in machine_descs[output] and "marketingModel" in machine_descs[output]["_LOCALIZABLE_"]:
+                    return str(machine_descs[output]["_LOCALIZABLE_"]["marketingModel"])
+
+        else:
+            cmd = ['/usr/sbin/ioreg', '-ar', '-k', 'product-name']
+            output = subprocess.check_output(cmd)
+            plist = FoundationPlist.readPlistFromString(output)
+            return str(plist[0]["product-name"].decode("utf-8", errors="ignore"))
+    except:
+        return False
 
 
 def set_pref(pref_name, pref_value):
@@ -723,32 +753,6 @@ def getconsoleuser():
     """Return console user."""
     cfuser = SCDynamicStoreCopyConsoleUser(None, None, None)
     return cfuser[0]
-
-def get_description():
-    """Gets the Mac model description."""
-    cpu_arch = os.uname()[3].lower()
-
-    try:
-        # Do things for Intel Mac
-        if 'x86_64' in cpu_arch or 'i386' in cpu_arch:
-
-            if os.path.isfile('/System/Library/PrivateFrameworks/ServerInformation.framework/Resources/en.lproj/SIMachineAttributes.plist'):
-
-                cmd = ['/usr/sbin/sysctl', '-n', 'hw.model']
-                output = subprocess.check_output(cmd)
-                output = output.decode("utf-8", errors="ignore")
-                machine_descs = FoundationPlist.readPlist('/System/Library/PrivateFrameworks/ServerInformation.framework/Resources/en.lproj/SIMachineAttributes.plist')
-
-                if output in machine_descs and "_LOCALIZABLE_" in machine_descs[output] and "marketingModel" in machine_descs[output]["_LOCALIZABLE_"]:
-                    return (machine_descs[output]["_LOCALIZABLE_"]["marketingModel"])
-
-        else:
-            cmd = ['/usr/sbin/ioreg', '-ar', '-k', 'product-name']
-            output = subprocess.check_output(cmd)
-            plist = FoundationPlist.readPlistFromString(output)
-            return (plist[0]["product-name"].decode("utf-8", errors="ignore"))
-    except:
-        return False
 
 
 # End of reportcommon
