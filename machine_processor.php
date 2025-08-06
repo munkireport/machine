@@ -61,10 +61,16 @@ class Machine_processor extends Processor
             $machine = new Machine_model();
         }
 
+        // Check if we have a machine_desc entry from the client
+        if (! array_key_exists('machine_desc', $mylist)){
+            $mylist['machine_desc'] = "model_lookup_failed";
+            $machine['machine_desc'] = "model_lookup_failed";
+        }
+
         // Check if we need to retrieve model from Apple, but only for Intel Macs
-        if ($this->should_run_model_description_lookup($machine) && $mylist['cpu_arch'] !== "arm64"){
+        if ($mylist['cpu_arch'] !== "arm64" && ! str_contains($mylist['machine_desc'], 'Mac') && $this->should_run_model_description_lookup($machine)){
             $mylist['machine_desc'] = $this->model_lookup($this->serial_number);
-        } else if ($this->should_run_model_description_lookup($machine) && $mylist['cpu_arch'] == "arm64"){
+        } else if ($mylist['cpu_arch'] == "arm64" && ! str_contains($mylist['machine_desc'], 'Mac') && $this->should_run_model_description_lookup($machine)){
             // Otherwise return a generic model ID for Apple Silicon Macs to make sure the device icon doesn't break
             $mylist['machine_desc'] = $mylist['machine_name'];
         }
