@@ -306,14 +306,31 @@ def get_description():
         if 'x86_64' in cpu_arch or 'i386' in cpu_arch:
 
             if os.path.isfile('/System/Library/PrivateFrameworks/ServerInformation.framework/Resources/en.lproj/SIMachineAttributes.plist'):
-
+                # Post-10.13 location
                 cmd = ['/usr/sbin/sysctl', '-n', 'hw.model']
                 output = subprocess.check_output(cmd)
-                output = output.decode("utf-8", errors="ignore")
+                output = re.sub(r'[^"a-zA-Z0-9,]', '', output.decode("utf-8", errors="ignore"))
                 machine_descs = FoundationPlist.readPlist('/System/Library/PrivateFrameworks/ServerInformation.framework/Resources/en.lproj/SIMachineAttributes.plist')
 
                 if output in machine_descs and "_LOCALIZABLE_" in machine_descs[output] and "marketingModel" in machine_descs[output]["_LOCALIZABLE_"]:
                     return str(machine_descs[output]["_LOCALIZABLE_"]["marketingModel"])
+                else:
+                    return False
+
+            elif os.path.isfile('/System/Library/PrivateFrameworks/ServerInformation.framework/Versions/A/Resources/English.lproj/SIMachineAttributes.plist'):
+                # Pre-10.13 location
+                cmd = ['/usr/sbin/sysctl', '-n', 'hw.model']
+                output = subprocess.check_output(cmd)
+                output = re.sub(r'[^"a-zA-Z0-9,]', '', output.decode("utf-8", errors="ignore"))
+                machine_descs = FoundationPlist.readPlist('/System/Library/PrivateFrameworks/ServerInformation.framework/Versions/A/Resources/English.lproj/SIMachineAttributes.plist')
+
+                if output in machine_descs and "_LOCALIZABLE_" in machine_descs[output] and "marketingModel" in machine_descs[output]["_LOCALIZABLE_"]:
+                    return str(machine_descs[output]["_LOCALIZABLE_"]["marketingModel"])
+                else:
+                    return False
+
+            else:
+                return False
 
         else:
             cmd = ['/usr/sbin/ioreg', '-ar', '-k', 'product-name']

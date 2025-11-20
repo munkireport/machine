@@ -68,9 +68,9 @@ class Machine_processor extends Processor
         }
 
         // Check if we need to retrieve model from Apple, but only for Intel Macs
-        if ($mylist['cpu_arch'] !== "arm64" && ! str_contains($mylist['machine_desc'], 'Mac') && $this->should_run_model_description_lookup($machine)){
+        if (array_key_exists('cpu_arch', $mylist) && $mylist['cpu_arch'] !== "arm64" && ! str_contains($mylist['machine_desc'], 'Mac') && $this->should_run_model_description_lookup($machine)){
             $mylist['machine_desc'] = $this->model_lookup($this->serial_number);
-        } else if ($mylist['cpu_arch'] == "arm64" && ! str_contains($mylist['machine_desc'], 'Mac') && $this->should_run_model_description_lookup($machine)){
+        } else if (! str_contains($mylist['machine_desc'], 'Mac') && $this->should_run_model_description_lookup($machine)){
             // Otherwise return a generic model ID for Apple Silicon Macs to make sure the device icon doesn't break
             $mylist['machine_desc'] = $mylist['machine_name'];
         }
@@ -99,10 +99,18 @@ class Machine_processor extends Processor
                 return "Virtual Machine";
 
             } else {
+
+                // Older Macs use the last 3 instead of last 4
+                if (strlen($serial_number) == 11){
+                    $serial_search = substr($serial_number, -3);
+                } else {
+                    $serial_search = substr($serial_number, -4);
+                }
+
                 // This method only works for non-randomized serial numbers (mid-2021 and older)
                 $client = new Request();
                 $options = ['http_errors' => false];
-                $result = (string) $client->get("https://support-sp.apple.com/sp/product?cc=".substr($serial_number, -4), $options);
+                $result = (string) $client->get("https://support-sp.apple.com/sp/product?cc=".$serial_search, $options);
 
                 if ( ! $result || strpos($result, '<configCode>') === false ){
                     return null;

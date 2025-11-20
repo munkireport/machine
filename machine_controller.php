@@ -72,39 +72,35 @@ class Machine_controller extends Module_controller
         }
 
         // Check if we need to convert to summary (Model + screen size)
-        if($summary){
+        if ($summary){
             $model_list = array();
             foreach ($out as $key => $obj) {
                 // Mac mini Server (Late 2012)
                 $suffix = "";
-                if(preg_match('/^(.+) \((.+)\)/', $obj['label'], $matches))
-                {
+                if (preg_match('/^(.+) \((.+)\)/', $obj['label'], $matches)){
                     $name = $matches[1];
+
                     // Find suffix
-                    if(preg_match('/([\d\.]+-inch)/', $matches[2], $matches))
-                    {
+                    if (preg_match('/([\d\.]+-inch)/', $matches[2], $matches)){
                         $suffix = ' ('.$matches[1].')';
                     }
-                }
-                else
-                {
+                } else {
                     $name = $obj['label'];
 
                 }
-                if(! isset($model_list[$name.$suffix]))
-                {
+                
+                if (! isset($model_list[$name.$suffix])){
                     $model_list[$name.$suffix] = 0;
                 }
-                $model_list[$name.$suffix] += $obj['count'];
 
+                $model_list[$name.$suffix] += $obj['count'];
             }
             // Erase out
             $out = array();
             // Sort model list
             arsort($model_list);
             // Add entries to $out
-            foreach ($model_list as $key => $count)
-            {
+            foreach ($model_list as $key => $count){
                 $out[] = array('label' => $key, 'count' => $count);
             }
         }
@@ -166,7 +162,7 @@ class Machine_controller extends Module_controller
             ->orderBy('physical_memory', 'desc')
             ->get()
             ->toArray();
-        
+
         foreach ($machine as $obj) {
         // Take care of mixed entries (string or int)
             if (isset($tmp[$obj['physical_memory']])) {
@@ -187,12 +183,12 @@ class Machine_controller extends Module_controller
                 break;
             
             case 'button':
-                $labels = ['< 8GB' => 0, '8GB +' => 0, '16GB +' => 0];
+                $labels = ['< 16GB' => 0, '16GB +' => 0, '32GB +' => 0];
                 foreach ($tmp as $mem => $memcnt) {
                     $memcnt = intval($memcnt);
-                    if( $mem < 8 ){ $labels['< 8GB'] += $memcnt;}
-                    if( $mem < 16 && $mem <= 8 ){ $labels['8GB +'] += $memcnt;}
-                    if( $mem >= 16 ){ $labels['16GB +'] += $memcnt;}
+                    if( $mem < 16 ){ $labels['< 16GB'] += $memcnt;}
+                    if( $mem < 32 && $mem <= 16 ){ $labels['16GB +'] += $memcnt;}
+                    if( $mem >= 32 ){ $labels['32GB +'] += $memcnt;}
                 }
 
                 foreach ($labels as $label => $count) {
@@ -308,10 +304,18 @@ class Machine_controller extends Module_controller
                 $out['model'] = $machine->machine_desc;
 
             } else {
+
+                // Older Macs use the last 3 instead of last 4
+                if (strlen($serial_number) == 11){
+                    $serial_search = substr($serial_number, -3);
+                } else {
+                    $serial_search = substr($serial_number, -4);
+                }
+
                 // This method only works for non-randomized serial numbers (mid-2021 and older)
                 $client = new Request();
                 $options = ['http_errors' => false];
-                $result = (string) $client->get("https://support-sp.apple.com/sp/product?cc=".substr($serial_number, -4), $options);
+                $result = (string) $client->get("https://support-sp.apple.com/sp/product?cc=".$serial_search, $options);
 
                 if ( ! $result || strpos($result, '<configCode>') === false ){
                     if ($machine['cpu_arch'] == "arm64"){
@@ -356,8 +360,7 @@ class Machine_controller extends Module_controller
             $machine_name = str_replace(" ", "", $machine['machine_name']); 
 
             // The iMac Pro looks the same as an iMac
-            if($machine['machine_model'] == "iMacPro1,1")
-            {
+            if ($machine['machine_model'] == "iMacPro1,1"){
                 $machine_name = "iMac";
             }
 

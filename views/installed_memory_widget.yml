@@ -5,13 +5,13 @@ i18n_title: warranty.installed_memory_title
 listing_link: /show/listing/machine/hardware
 icon: fa-tasks
 buttons:
-  - label: < 8GB
-    search_component: memory < 8GB 
+  - label: < 16GB
+    search_component: memory < 16GB 
     class: btn-danger  
-  - label: 8GB + 
-    search_component: 8GB memory 15GB 
-    class: btn-warning
   - label: 16GB + 
-    search_component: memory > 15GB 
+    search_component: 16GB memory 31GB 
+    class: btn-warning
+  - label: 32GB + 
+    search_component: memory > 31GB 
     class: btn-success
 
